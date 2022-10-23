@@ -6,6 +6,11 @@
 
 #include "file_ply_stl.hpp"
 
+double gradosARadianes(double grados)
+{
+    return grados * M_PI / 180;
+}
+
 //*************************************************************************
 // _puntos3D
 //*************************************************************************
@@ -966,6 +971,12 @@ void _piernaDch::draw(_modo modo, float r, float g, float b, float grosor) {
 
 _soldado::_soldado(){
   giro_cabeza = 0.0;
+  giro_brazoIzq = 0.0;
+  giro_cabeza_max = 90;
+  giro_brazo_max = 180;
+  giro_brazo_min = -90;
+
+
 
 };
 
@@ -993,8 +1004,12 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2, tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2), 0);
-  brazoIzq.draw(modo, r, g, b, grosor);
+  glTranslatef((tronco.ancho/2 + brazoIzq.ancho/2),
+               (tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) - brazoIzq.alto/2 * cos(gradosARadianes(giro_brazoIzq)) + brazoIzq.alto/2),
+                -brazoIzq.alto/2 * sin(gradosARadianes(giro_brazoIzq)));
+  // glTranslatef(,,)
+  glRotatef(giro_brazoIzq,1,0,0);
+  brazoDch.draw(modo, r, g, b, grosor);
   glPopMatrix();
   
 

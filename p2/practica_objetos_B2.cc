@@ -284,18 +284,26 @@ void special_key(int Tecla1, int x, int y) {
     case GLUT_KEY_F1:
       excavadora.giro_cabina += 5;
       soldado.giro_cabeza += 5;
+      if (soldado.giro_cabeza > soldado.giro_cabeza_max)
+        soldado.giro_cabeza = soldado.giro_cabeza_max;
       break;
     case GLUT_KEY_F2:
       excavadora.giro_cabina -= 5;
       soldado.giro_cabeza -= 5;
+      if (soldado.giro_cabeza < -soldado.giro_cabeza_max)
+        soldado.giro_cabeza = -soldado.giro_cabeza_max;
       break;
     case GLUT_KEY_F3:
       excavadora.giro_primer_brazo += 1;
-      if (excavadora.giro_primer_brazo > excavadora.giro_primer_brazo_max)
-        excavadora.giro_primer_brazo = excavadora.giro_primer_brazo_max;
+      soldado.giro_brazoIzq += 2.5;
+      if (soldado.giro_brazoIzq > soldado.giro_brazo_max)
+        soldado.giro_brazoIzq = soldado.giro_brazo_max;
       break;
     case GLUT_KEY_F4:
       excavadora.giro_primer_brazo -= 1;
+      soldado.giro_brazoIzq -= 2.5;
+      if (soldado.giro_brazoIzq < soldado.giro_brazo_min)
+        soldado.giro_brazoIzq = soldado.giro_brazo_min;
       if (excavadora.giro_primer_brazo < excavadora.giro_primer_brazo_min)
         excavadora.giro_primer_brazo = excavadora.giro_primer_brazo_min;
       break;
