@@ -1007,6 +1007,8 @@ _soldado::_soldado(){
   giro_cabeza_max = 90;
   giro_brazo_max = 90;
   giro_brazo_min = -180;
+  giro_piernas_max = 30;
+  piernas_signo=1;
 
 
 
@@ -1014,13 +1016,17 @@ _soldado::_soldado(){
 
 void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
   glPushMatrix();
-  glTranslatef(-piernaIzq.ancho/2, 0, 0);
+  glTranslatef(-piernaIzq.ancho/2, piernaIzq.alto/2, 0);
+  glRotatef(giro_piernas,1,0,0);
+  glTranslatef(0,-piernaIzq.alto/2,0);
   piernaIzq.draw(modo, r, g, b, grosor);
   glPopMatrix();
 
 
   glPushMatrix();
-  glTranslatef(piernaDch.ancho/2, 0, 0);
+  glTranslatef(piernaDch.ancho/2, piernaIzq.alto/2, 0);
+  glRotatef(-giro_piernas,1,0,0);
+  glTranslatef(0,-piernaIzq.alto/2,0);
   piernaDch.draw(modo, r, g, b, grosor);
   glPopMatrix();
 

@@ -342,10 +342,15 @@ class _soldado : public _triangulos3D{
   public:
     float giro_cabeza;
     float giro_brazoIzq;
+    float giro_piernas;
 
     float giro_cabeza_max;
     float giro_brazo_max;
     float giro_brazo_min;
+    float giro_piernas_max;
+
+    int piernas_signo;
+
 
 
     _soldado();

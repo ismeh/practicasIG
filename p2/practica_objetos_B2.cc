@@ -311,6 +311,14 @@ void special_key(int Tecla1, int x, int y) {
       excavadora.giro_segundo_brazo += 1;
       if (excavadora.giro_segundo_brazo > excavadora.giro_segundo_brazo_max)
         excavadora.giro_segundo_brazo = excavadora.giro_segundo_brazo_max;
+
+      if(soldado.giro_piernas == soldado.giro_piernas_max)
+        soldado.piernas_signo = -1;
+      if(soldado.giro_piernas == -soldado.giro_piernas_max)
+        soldado.piernas_signo = 1;
+      
+      soldado.giro_piernas += 1*soldado.piernas_signo;
+      
       break;
     case GLUT_KEY_F6:
       excavadora.giro_segundo_brazo -= 1;
