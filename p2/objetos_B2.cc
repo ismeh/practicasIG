@@ -1004,11 +1004,19 @@ void _escudo::draw(_modo modo, float r, float g, float b, float grosor) {
 _soldado::_soldado(){
   giro_cabeza = 0.0;
   giro_brazoIzq = 0.0;
+  giro_piernas = 0.0;
+  giro_brazoIzq_lateral = 0.0;
+
+
   giro_cabeza_max = 90;
   giro_brazo_max = 90;
   giro_brazo_min = -180;
   giro_piernas_max = 30;
+  giro_brazoIzq_lateral_max = 90;
+  giro_brazoIzq_lateral_min = -30;
+
   piernas_signo=1;
+  animacion = false;
 
 
 
@@ -1043,14 +1051,15 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
   glPopMatrix();
 
 
-  //Brazo Izquierda
+  // //Brazo Izquierda
   glPushMatrix();
   /* glTranslatef((tronco.ancho/2 + brazoIzq.ancho/2),
               //  (tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) - brazoIzq.alto/2 * cos(gradosARadianes(giro_brazoIzq)) + brazoIzq.alto/2),
                 // -brazoIzq.alto/2 * sin(gradosARadianes(giro_brazoIzq)));*/
-  glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2,(tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) + brazoIzq.alto/2),0);
+  glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2  -brazoIzq.ancho/2,(tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) + brazoIzq.alto/2),0);
   glRotatef(giro_brazoIzq,1,0,0);
-  glTranslatef(0,-brazoIzq.alto/2,0);
+  glRotatef(giro_brazoIzq_lateral,0,0,1);
+  glTranslatef(+brazoIzq.ancho/2,-brazoIzq.alto/2,0);
   brazoIzq.draw(modo, r, g, b, grosor);
   glPopMatrix();
 

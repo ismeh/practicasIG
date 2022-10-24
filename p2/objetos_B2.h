@@ -343,13 +343,17 @@ class _soldado : public _triangulos3D{
     float giro_cabeza;
     float giro_brazoIzq;
     float giro_piernas;
+    float giro_brazoIzq_lateral;
 
     float giro_cabeza_max;
     float giro_brazo_max;
     float giro_brazo_min;
     float giro_piernas_max;
+    float giro_brazoIzq_lateral_max;
+    float giro_brazoIzq_lateral_min;
 
     int piernas_signo;
+    bool animacion;
 
 
 

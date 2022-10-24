@@ -11,6 +11,8 @@
 
 using namespace std;
 
+
+
 // tipos
 typedef enum {
   CUBO,
@@ -53,6 +55,24 @@ _excavadora excavadora;
 _soldado soldado;
 
 // _objeto_ply *ply;
+
+
+void movimientoPiernas(float cantidad_movimiento){
+  if(soldado.giro_piernas == soldado.giro_piernas_max)
+        soldado.piernas_signo = -1;
+      if(soldado.giro_piernas == -soldado.giro_piernas_max)
+        soldado.piernas_signo = 1;
+      
+  soldado.giro_piernas += cantidad_movimiento*soldado.piernas_signo;
+}
+
+//animacion
+void animacion(){
+  if(soldado.animacion){
+    movimientoPiernas(0.5);
+    glutPostRedisplay();
+  }
+}
 
 //**************************************************************************
 //
@@ -231,7 +251,7 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'W':
       t_objeto = CILINDRO;
       break;
-    case 'S':
+    case 'Z':
       t_objeto = ESFERA;
       break;
     case 'E':
@@ -245,6 +265,12 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       break;
     case 'B':
       t_objeto = SOLDADO;
+      break;
+    case 'S':
+      if(soldado.animacion == false)
+        soldado.animacion = true;
+      else
+        soldado.animacion = false;
       break;
   }
   glutPostRedisplay();
@@ -312,23 +338,27 @@ void special_key(int Tecla1, int x, int y) {
       if (excavadora.giro_segundo_brazo > excavadora.giro_segundo_brazo_max)
         excavadora.giro_segundo_brazo = excavadora.giro_segundo_brazo_max;
 
-      if(soldado.giro_piernas == soldado.giro_piernas_max)
-        soldado.piernas_signo = -1;
-      if(soldado.giro_piernas == -soldado.giro_piernas_max)
-        soldado.piernas_signo = 1;
-      
-      soldado.giro_piernas += 1*soldado.piernas_signo;
+      movimientoPiernas(2.5);
       
       break;
-    case GLUT_KEY_F6:
+    case GLUT_KEY_F6: 
       excavadora.giro_segundo_brazo -= 1;
       if (excavadora.giro_segundo_brazo < excavadora.giro_segundo_brazo_min)
         excavadora.giro_segundo_brazo = excavadora.giro_segundo_brazo_min;
+
+      soldado.giro_brazoIzq_lateral += 2;
+      if (soldado.giro_brazoIzq_lateral > soldado.giro_brazoIzq_lateral_max)
+        soldado.giro_brazoIzq_lateral = soldado.giro_brazoIzq_lateral_max;
       break;
     case GLUT_KEY_F7:
       excavadora.giro_pala += 1;
       if (excavadora.giro_pala > excavadora.giro_pala_max)
         excavadora.giro_pala = excavadora.giro_pala_max;
+
+      if(soldado.giro_brazoIzq < -20)
+      soldado.giro_brazoIzq_lateral -= 2;
+      if (soldado.giro_brazoIzq_lateral < soldado.giro_brazoIzq_lateral_min)
+        soldado.giro_brazoIzq_lateral = soldado.giro_brazoIzq_lateral_min;
       break;
     case GLUT_KEY_F8:
       excavadora.giro_pala -= 1;
@@ -459,6 +489,9 @@ int main(int argc, char *argv[]) {
   mi_ply.parametros_PLY(argv[1], 8);
 
   // ply = new _objeto_ply(argv[1]);
+
+  //Animación automatica
+  glutIdleFunc(animacion);
 
   // inicio del bucle de eventos
   glutMainLoop();
