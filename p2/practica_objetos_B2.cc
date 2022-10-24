@@ -45,7 +45,7 @@ _piramide piramide(0.85, 1.3);
 _objeto_ply ply;
 _rotacion rotacion;
 _extrusion *extrusion;
-_cilindro cilindro(1, 2, 6);
+_cilindro cilindro(1, 2, 6,1,1);
 _cono cono(1, 2, 6);
 _esfera esfera(1, 6, 6);
 _rotacion_PLY mi_ply;
@@ -383,7 +383,7 @@ int main(int argc, char *argv[]) {
   aux.z = 0.0;
   perfil.push_back(aux);
 
-  rotacion.parametros(perfil, 6, 1, 1, 1);
+  rotacion.parametros(perfil, 6, 0, 1, 1);
 
   aux.x = 1.0;
   aux.y = 0.0;

@@ -585,9 +585,10 @@ _extrusion::_extrusion(vector<_vertex3f> poligono, float x, float y, float z) {
 
 
 // cilindro
-_cilindro::_cilindro(float radio, float altura, int num) {
+_cilindro::_cilindro(float radio, float altura, int num, int tapa_in, int tapa_su) {
   vector<_vertex3f> perfil;
   _vertex3f vert_aux;
+  _radio = radio;
 
   vert_aux.x = radio;
   vert_aux.y = -altura / 2.0;
@@ -601,7 +602,7 @@ _cilindro::_cilindro(float radio, float altura, int num) {
 
   perfil.push_back(vert_aux);
 
-  parametros(perfil, num, 0, 1, 1);
+  parametros(perfil, num, 0, tapa_in, tapa_su);
 }
 
 // cono
@@ -921,6 +922,12 @@ void _brazoIzq::draw(_modo modo, float r, float g, float b, float grosor) {
   glScalef(ancho, alto, fondo);
   cubo.draw(modo, r, g, b, grosor);
   glPopMatrix();
+
+  ////Escudo
+  glPushMatrix();
+  glTranslatef(0, -1, 0);
+  escudo.draw(modo, r, g, b, grosor);
+  glPopMatrix();
 };
 
 _brazoDch::_brazoDch() {
@@ -967,14 +974,39 @@ void _piernaDch::draw(_modo modo, float r, float g, float b, float grosor) {
   glPopMatrix();
 };
 
+_escudo::_escudo(){
+  ancho = 2;
+  alto = 4;
+  fondo = 0.1;
+  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+}
+
+void _escudo::draw(_modo modo, float r, float g, float b, float grosor) {
+  glPushMatrix();
+    glRotatef(90,0,1,0);
+    glPushMatrix();
+      glRotatef(45,0,1,0);
+      cilindro->draw(modo, r, g, b, grosor);
+    glPopMatrix();
+
+    glPushMatrix();
+      glRotatef(90,0,0,1);
+      glTranslatef(0,0,cilindro->_radio * cos(M_PI/4));
+      glScalef(ancho, alto, fondo);
+      cubo.draw(modo, r, g, b, grosor);
+    glPopMatrix();
+  glPopMatrix();
+};
+
+
 
 
 _soldado::_soldado(){
   giro_cabeza = 0.0;
   giro_brazoIzq = 0.0;
   giro_cabeza_max = 90;
-  giro_brazo_max = 180;
-  giro_brazo_min = -90;
+  giro_brazo_max = 90;
+  giro_brazo_min = -180;
 
 
 
@@ -998,19 +1030,24 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
   tronco.draw(modo, r, g, b, grosor);
   glPopMatrix();
 
+  //Derecha
   glPushMatrix();
   glTranslatef(-tronco.ancho/2 - brazoIzq.ancho/2, tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2), 0);
+  brazoDch.draw(modo, r, g, b, grosor);
+  glPopMatrix();
+
+
+  //Brazo Izquierda
+  glPushMatrix();
+  /* glTranslatef((tronco.ancho/2 + brazoIzq.ancho/2),
+              //  (tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) - brazoIzq.alto/2 * cos(gradosARadianes(giro_brazoIzq)) + brazoIzq.alto/2),
+                // -brazoIzq.alto/2 * sin(gradosARadianes(giro_brazoIzq)));*/
+  glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2,(tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) + brazoIzq.alto/2),0);
+  glRotatef(giro_brazoIzq,1,0,0);
+  glTranslatef(0,-brazoIzq.alto/2,0);
   brazoIzq.draw(modo, r, g, b, grosor);
   glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef((tronco.ancho/2 + brazoIzq.ancho/2),
-               (tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) - brazoIzq.alto/2 * cos(gradosARadianes(giro_brazoIzq)) + brazoIzq.alto/2),
-                -brazoIzq.alto/2 * sin(gradosARadianes(giro_brazoIzq)));
-  // glTranslatef(,,)
-  glRotatef(giro_brazoIzq,1,0,0);
-  brazoDch.draw(modo, r, g, b, grosor);
-  glPopMatrix();
   
 
   glPushMatrix();

@@ -100,8 +100,8 @@ class _rotacion : public _triangulos3D {
 // cilindro
 class _cilindro : public _rotacion {
  public:
-   _cilindro(float radio = 1.0, float altura = 2.0, int num = 12);
-
+   _cilindro(float radio = 1.0, float altura = 2.0, int num = 12,int tapa_in=1, int tapa_su=1);
+  float _radio;
 };
 
 // cono
@@ -264,6 +264,21 @@ class _tronco : public _triangulos3D{
   _cubo cubo;
 };
 
+class _escudo : public _triangulos3D{
+public:
+  _escudo();
+  void draw(_modo modo, float r, float g, float b, float grosor);
+
+  float ancho;
+  float alto;
+  float fondo;
+
+ protected:
+  _cubo cubo;
+  _cilindro*  cilindro = new _cilindro(0.7,0.5,4,0,0);
+
+};
+
 class _brazoIzq : public _triangulos3D{
  public:
   _brazoIzq();
@@ -275,6 +290,7 @@ class _brazoIzq : public _triangulos3D{
 
  protected:
   _cubo cubo;
+  _escudo escudo;
 };
 
 class _brazoDch: public _triangulos3D{
@@ -320,9 +336,7 @@ class _espada : public _triangulos3D{
 
 };
 
-class _escudo : public _triangulos3D{
 
-};
 
 class _soldado : public _triangulos3D{
   public:
@@ -344,6 +358,7 @@ class _soldado : public _triangulos3D{
     _piernaDch piernaDch;
     _brazoIzq brazoIzq;
     _brazoDch brazoDch;
+    _escudo escudo;
 };
 
 
