@@ -58,10 +58,10 @@ _soldado soldado;
 
 
 void movimientoPiernas(float cantidad_movimiento){
-  if(soldado.giro_piernas == soldado.giro_piernas_max)
+  if(soldado.giro_piernas >= soldado.giro_piernas_max)
         soldado.piernas_signo = -1;
-      if(soldado.giro_piernas == -soldado.giro_piernas_max)
-        soldado.piernas_signo = 1;
+  if(soldado.giro_piernas <= -soldado.giro_piernas_max)
+    soldado.piernas_signo = 1;
       
   soldado.giro_piernas += cantidad_movimiento*soldado.piernas_signo;
 }
@@ -355,7 +355,7 @@ void special_key(int Tecla1, int x, int y) {
       if (excavadora.giro_pala > excavadora.giro_pala_max)
         excavadora.giro_pala = excavadora.giro_pala_max;
 
-      if(soldado.giro_brazoIzq < -20)
+      //if(soldado.giro_brazoIzq < -20)
       soldado.giro_brazoIzq_lateral -= 2;
       if (soldado.giro_brazoIzq_lateral < soldado.giro_brazoIzq_lateral_min)
         soldado.giro_brazoIzq_lateral = soldado.giro_brazoIzq_lateral_min;
