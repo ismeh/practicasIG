@@ -293,6 +293,22 @@ class _brazoIzq : public _triangulos3D{
   _escudo escudo;
 };
 
+class _espada : public _triangulos3D{
+  public:
+  _espada();
+  void draw(_modo modo, float r, float g, float b, float grosor);
+
+  float ancho;
+  float alto;
+  float fondo;
+
+ protected:
+  _cubo cruz;
+  _cubo cuerpo;
+  _cubo punta;
+
+};
+
 class _brazoDch: public _triangulos3D{
  public:
   _brazoDch();
@@ -304,6 +320,7 @@ class _brazoDch: public _triangulos3D{
 
  protected:
   _cubo cubo;
+  _espada espada;
 };
 
 class _piernaIzq : public _triangulos3D{
@@ -332,9 +349,7 @@ class _piernaDch : public _triangulos3D{
   _cubo cubo;
 };
 
-class _espada : public _triangulos3D{
 
-};
 
 
 
@@ -352,7 +367,11 @@ class _soldado : public _triangulos3D{
     float giro_brazoIzq_lateral_max;
     float giro_brazoIzq_lateral_min;
 
+    //animacion
     int piernas_signo;
+    float giro_brazos_animacion_max;
+    int giro_brazos_animacion_signo;
+    float giro_brazos_animacion;
     bool animacion;
 
 
@@ -368,6 +387,8 @@ class _soldado : public _triangulos3D{
     _brazoIzq brazoIzq;
     _brazoDch brazoDch;
     _escudo escudo;
+    _espada espada;
+
 };
 
 

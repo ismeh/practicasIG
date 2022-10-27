@@ -66,10 +66,21 @@ void movimientoPiernas(float cantidad_movimiento){
   soldado.giro_piernas += cantidad_movimiento*soldado.piernas_signo;
 }
 
+void movimientoBrazos(float cantidad_movimiento){
+  if(soldado.giro_brazos_animacion >= soldado.giro_brazos_animacion_max)
+        soldado.giro_brazos_animacion_signo = -1;
+  if(soldado.giro_brazos_animacion <= -soldado.giro_brazos_animacion_max)
+    soldado.giro_brazos_animacion_signo = 1;
+      
+  soldado.giro_brazos_animacion += cantidad_movimiento*soldado.giro_brazos_animacion_signo;
+}
+
 //animacion
 void animacion(){
   if(soldado.animacion){
-    movimientoPiernas(0.5);
+    float velocidad = 0.3;
+    movimientoPiernas(velocidad);
+    movimientoBrazos(velocidad);
     glutPostRedisplay();
   }
 }

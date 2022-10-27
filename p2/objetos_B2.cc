@@ -886,7 +886,11 @@ _cabeza::_cabeza() {
   ancho = 1;
   alto = 1;
   fondo = 1.2;
-  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+
+  //Carne
+  // cubo.colors_chess(0.89, 0.76, 0.6, 0.88, 0.72, 0.55);
+  cubo.colors_chess(0.59, 0.56, 0.56, 0.57, 0.54, 0.54);
+
 };
 
 void _cabeza::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -900,7 +904,7 @@ _tronco::_tronco() {
   ancho = 1.5;
   alto = 3;
   fondo = 1;
-  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+  cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
 };
 
 void _tronco::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -914,7 +918,7 @@ _brazoIzq::_brazoIzq() {
   ancho = 0.5;
   alto = 4;
   fondo = 1;
-  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+  cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
 };
 
 void _brazoIzq::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -934,13 +938,18 @@ _brazoDch::_brazoDch() {
   ancho = 0.5;
   alto = 4;
   fondo = 1;
-  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+  cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
 };
 
 void _brazoDch::draw(_modo modo, float r, float g, float b, float grosor) {
   glPushMatrix();
   glScalef(ancho, alto, fondo);
   cubo.draw(modo, r, g, b, grosor);
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(0,-alto/3.5,0);
+  espada.draw(modo, r, g, b, grosor);
   glPopMatrix();
 };
 
@@ -950,7 +959,7 @@ _piernaIzq::_piernaIzq() {
   ancho = 0.75;
   alto = 4;
   fondo = 1;
-  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+  cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
 };
 
 void _piernaIzq::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -964,7 +973,7 @@ _piernaDch::_piernaDch() {
   ancho = 0.75;
   alto = 4;
   fondo = 1;
-  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+  cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
 };
 
 void _piernaDch::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -978,7 +987,9 @@ _escudo::_escudo(){
   ancho = 2;
   alto = 4;
   fondo = 0.1;
-  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+  cubo.colors_chess(0.73,0.01,0.03,0.73,0.01,0.03);
+  cilindro->colors_chess(0.29,0.16,0.1,0.29,0.16,0.1);
+  
 }
 
 void _escudo::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -998,7 +1009,40 @@ void _escudo::draw(_modo modo, float r, float g, float b, float grosor) {
   glPopMatrix();
 };
 
+_espada::_espada(){
+  ancho = 0.3;
+  alto = 4.0;
+  fondo = 0.1;
+  cuerpo.colors_chess(0.58, 0.77, 0.84, 0.6, 0.78, 0.85);
+  punta.colors_chess(0.58, 0.77, 0.84, 0.6, 0.78, 0.85);
+  cruz.colors_chess(0.78, 0.58, 0.39, 0.79, 0.6, 0.4);
+}
 
+void _espada::draw(_modo modo, float r, float g, float b, float grosor) {
+  glPushMatrix();
+  glRotatef(90,1,0,0);
+  glRotatef(90,0,1,0);
+    glPushMatrix();
+    glTranslatef(0,alto/2,0);
+    glScalef(ancho, alto, fondo);
+    cuerpo.draw(modo, r, g, b, grosor);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0,ancho/2+alto/7,0);
+    glScalef(ancho*3, ancho, ancho);
+    cruz.draw(modo, r, g, b, grosor);
+    glPopMatrix();
+
+    glPushMatrix();
+    float lado = ancho/sqrt(2);
+    glTranslatef(0,alto,0);
+    glScalef(lado, lado, fondo);
+    glRotatef(45,0,0,1);
+    punta.draw(modo, r, g, b, grosor);
+    glPopMatrix();
+  glPopMatrix();
+}
 
 
 _soldado::_soldado(){
@@ -1015,7 +1059,11 @@ _soldado::_soldado(){
   giro_brazoIzq_lateral_max = 90;
   giro_brazoIzq_lateral_min = -30;
 
+  //Animacion
   piernas_signo=1;
+  giro_brazos_animacion_signo=1;
+  giro_brazos_animacion=0;
+  giro_brazos_animacion_max = giro_piernas_max;
   animacion = false;
 
 
@@ -1044,12 +1092,13 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
   tronco.draw(modo, r, g, b, grosor);
   glPopMatrix();
 
-  //Derecha
+  //Brazo Derecho
   glPushMatrix();
-  glTranslatef(-tronco.ancho/2 - brazoIzq.ancho/2, tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2), 0);
+  glTranslatef(-tronco.ancho/2 , tronco.alto/2 + piernaDch.alto/2 +tronco.alto/2, 0);
+  glRotatef(-giro_brazos_animacion,1,0,0);
+  glTranslatef(-brazoIzq.ancho/2,-brazoIzq.alto/2,0);
   brazoDch.draw(modo, r, g, b, grosor);
   glPopMatrix();
-
 
   // //Brazo Izquierda
   glPushMatrix();
@@ -1057,8 +1106,13 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
               //  (tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) - brazoIzq.alto/2 * cos(gradosARadianes(giro_brazoIzq)) + brazoIzq.alto/2),
                 // -brazoIzq.alto/2 * sin(gradosARadianes(giro_brazoIzq)));*/
   glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2  -brazoIzq.ancho/2,(tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) + brazoIzq.alto/2),0);
+  //if(!animacion){
   glRotatef(giro_brazoIzq,1,0,0);
   glRotatef(giro_brazoIzq_lateral,0,0,1);
+  //}
+  //else{
+    glRotatef(giro_brazos_animacion,1,0,0);
+  //}
   glTranslatef(+brazoIzq.ancho/2,-brazoIzq.alto/2,0);
   brazoIzq.draw(modo, r, g, b, grosor);
   glPopMatrix();

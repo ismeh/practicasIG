@@ -2,3 +2,4 @@
 /practicas_ig.pdf
 .gitignore
 .vscode
+*.o
