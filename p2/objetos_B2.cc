@@ -1106,13 +1106,10 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
               //  (tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) - brazoIzq.alto/2 * cos(gradosARadianes(giro_brazoIzq)) + brazoIzq.alto/2),
                 // -brazoIzq.alto/2 * sin(gradosARadianes(giro_brazoIzq)));*/
   glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2  -brazoIzq.ancho/2,(tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) + brazoIzq.alto/2),0);
-  //if(!animacion){
   glRotatef(giro_brazoIzq,1,0,0);
   glRotatef(giro_brazoIzq_lateral,0,0,1);
-  //}
-  //else{
-    glRotatef(giro_brazos_animacion,1,0,0);
-  //}
+
+  // glRotatef(giro_brazos_animacion,1,0,0);
   glTranslatef(+brazoIzq.ancho/2,-brazoIzq.alto/2,0);
   brazoIzq.draw(modo, r, g, b, grosor);
   glPopMatrix();
@@ -1124,4 +1121,6 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
   glRotatef(giro_cabeza,0,1,0);
   cabeza.draw(modo, r, g, b, grosor);
   glPopMatrix();
+
+  cout << "Giro B.Izq:" << giro_brazoIzq << "\nGiro Lateral izq:" << giro_brazoIzq_lateral << endl;
 }

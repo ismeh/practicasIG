@@ -71,8 +71,13 @@ void movimientoBrazos(float cantidad_movimiento){
         soldado.giro_brazos_animacion_signo = -1;
   if(soldado.giro_brazos_animacion <= -soldado.giro_brazos_animacion_max)
     soldado.giro_brazos_animacion_signo = 1;
+
+    float incremento = cantidad_movimiento*soldado.giro_brazos_animacion_signo;
       
-  soldado.giro_brazos_animacion += cantidad_movimiento*soldado.giro_brazos_animacion_signo;
+  soldado.giro_brazos_animacion += incremento;
+  if(soldado.giro_brazoIzq_lateral >= 0 || soldado.giro_brazoIzq < -55)
+    soldado.giro_brazoIzq += incremento;
+
 }
 
 //animacion
@@ -332,7 +337,8 @@ void special_key(int Tecla1, int x, int y) {
       break;
     case GLUT_KEY_F3:
       excavadora.giro_primer_brazo += 1;
-      soldado.giro_brazoIzq += 2.5;
+      if(soldado.giro_brazoIzq_lateral >= 0 || soldado.giro_brazoIzq < -55)
+        soldado.giro_brazoIzq += 2.5;
       if (soldado.giro_brazoIzq > soldado.giro_brazo_max)
         soldado.giro_brazoIzq = soldado.giro_brazo_max;
       break;
@@ -366,7 +372,7 @@ void special_key(int Tecla1, int x, int y) {
       if (excavadora.giro_pala > excavadora.giro_pala_max)
         excavadora.giro_pala = excavadora.giro_pala_max;
 
-      //if(soldado.giro_brazoIzq < -20)
+      if(soldado.giro_brazoIzq <= -55 || soldado.giro_brazoIzq_lateral > 0)
       soldado.giro_brazoIzq_lateral -= 2;
       if (soldado.giro_brazoIzq_lateral < soldado.giro_brazoIzq_lateral_min)
         soldado.giro_brazoIzq_lateral = soldado.giro_brazoIzq_lateral_min;
