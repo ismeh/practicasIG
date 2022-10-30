@@ -84,8 +84,11 @@ void movimientoBrazos(float cantidad_movimiento){
 void animacion(){
   if(soldado.animacion){
     float velocidad = 0.3;
+    float vel_rot = velocidad/2;
     movimientoPiernas(velocidad);
     movimientoBrazos(velocidad);
+    if(soldado.activadaRotacion)
+      soldado.rotacion += vel_rot;
     glutPostRedisplay();
   }
 }
@@ -276,10 +279,10 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'M':
       t_objeto = ROTACION_PLY;
       break;
-    case 'A':
+    case 'B':
       t_objeto = EXCAVADORA;
       break;
-    case 'B':
+    case 'A':
       t_objeto = SOLDADO;
       break;
     case 'S':
@@ -288,6 +291,13 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       else
         soldado.animacion = false;
       break;
+    case 'D':
+      if(soldado.activadaRotacion == false)
+        soldado.activadaRotacion = true;
+      else
+        soldado.activadaRotacion = false;
+      break;
+    
   }
   glutPostRedisplay();
 }
