@@ -1074,58 +1074,53 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
   glPushMatrix();
     //Rotacion del soldado en la animacion
     glRotatef(rotacion,0,1,0);
+    //Altura de las piernas
+    glTranslatef(0, piernaIzq.alto, 0);
 
     glPushMatrix();
-    glTranslatef(-piernaIzq.ancho/2, piernaIzq.alto/2, 0);
+    glTranslatef(-piernaIzq.ancho/2, 0, 0);
     glRotatef(giro_piernas,1,0,0);
     glTranslatef(0,-piernaIzq.alto/2,0);
     piernaIzq.draw(modo, r, g, b, grosor);
     glPopMatrix();
 
-
     glPushMatrix();
-    glTranslatef(piernaDch.ancho/2, piernaIzq.alto/2, 0);
+    glTranslatef(piernaDch.ancho/2, 0, 0);
     glRotatef(-giro_piernas,1,0,0);
     glTranslatef(0,-piernaIzq.alto/2,0);
     piernaDch.draw(modo, r, g, b, grosor);
     glPopMatrix();
 
-
-    glPushMatrix();
-    glTranslatef(0, tronco.alto/2 + piernaDch.alto/2, 0);
+    //Altura del tronco
+    glTranslatef(0, tronco.alto/2, 0);
     tronco.draw(modo, r, g, b, grosor);
-    glPopMatrix();
+
+    //Altura brazos
+    glTranslatef(0, tronco.alto/2, 0);
 
     //Brazo Derecho
     glPushMatrix();
-    glTranslatef(-tronco.ancho/2 , tronco.alto/2 + piernaDch.alto/2 +tronco.alto/2, 0);
+    glTranslatef(-tronco.ancho/2 , 0, 0);
     glRotatef(-giro_brazos_animacion,1,0,0);
     glTranslatef(-brazoIzq.ancho/2,-brazoIzq.alto/2,0);
     brazoDch.draw(modo, r, g, b, grosor);
     glPopMatrix();
 
-    // //Brazo Izquierda
+    //Brazo Izquierda
     glPushMatrix();
-    /* glTranslatef((tronco.ancho/2 + brazoIzq.ancho/2),
-                //  (tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) - brazoIzq.alto/2 * cos(gradosARadianes(giro_brazoIzq)) + brazoIzq.alto/2),
-                  // -brazoIzq.alto/2 * sin(gradosARadianes(giro_brazoIzq)));*/
-    glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2  -brazoIzq.ancho/2,(tronco.alto/2 + piernaDch.alto/2 - (brazoIzq.alto/2-tronco.alto/2) + brazoIzq.alto/2),0);
+    glTranslatef(tronco.ancho/2 + brazoIzq.ancho/2  -brazoIzq.ancho/2,0,0);
     glRotatef(giro_brazoIzq,1,0,0);
     glRotatef(giro_brazoIzq_lateral,0,0,1);
-
-    // glRotatef(giro_brazos_animacion,1,0,0);
-    glTranslatef(+brazoIzq.ancho/2,-brazoIzq.alto/2,0);
+    glTranslatef(brazoIzq.ancho/2,-brazoIzq.alto/2,0);
     brazoIzq.draw(modo, r, g, b, grosor);
     glPopMatrix();
 
+    //Altura cabeza
+    glTranslatef(0, cabeza.alto/2, 0);
     
-
     glPushMatrix();
-    glTranslatef(0, cabeza.alto/2 + tronco.alto + piernaDch.alto/2, 0);
     glRotatef(giro_cabeza,0,1,0);
     cabeza.draw(modo, r, g, b, grosor);
     glPopMatrix();
   glPopMatrix();
-
-  cout << "Giro B.Izq:" << giro_brazoIzq << "\nGiro Lateral izq:" << giro_brazoIzq_lateral << endl;
 }

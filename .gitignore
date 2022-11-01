@@ -1,5 +1,8 @@
 /p3
-/practicas_ig.pdf
-.gitignore
-.vscode
 *.o
+*.zip
+*.pdf
+
+#Hidden files
+.*
+
