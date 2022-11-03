@@ -88,7 +88,7 @@ void animacion(){
     movimientoPiernas(velocidad);
     movimientoBrazos(velocidad);
     if(soldado.activadaRotacion)
-      soldado.rotacion += vel_rot;
+      soldado.rotacion_animacion += vel_rot;
     glutPostRedisplay();
   }
 }

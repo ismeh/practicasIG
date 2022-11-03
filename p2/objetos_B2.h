@@ -373,7 +373,7 @@ class _soldado : public _triangulos3D{
     int giro_brazos_animacion_signo;
     float giro_brazos_animacion;
     bool animacion;
-    float rotacion;
+    float rotacion_animacion;
     bool activadaRotacion;
 
 
