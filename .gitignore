@@ -2,6 +2,8 @@
 *.o
 *.zip
 *.pdf
+*.excalidraw
+practica_objetos_B2
 
 #Hidden files
 .*
