@@ -96,7 +96,7 @@ void _triangulos3D::draw_solido(float r, float g, float b) {
 
 void _triangulos3D::draw_solido_colores() {
   int i;
-  glPolygonMode(GL_FRONT, GL_FILL);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glBegin(GL_TRIANGLES);
 
   for (i = 0; i < caras.size(); i++) {
@@ -211,15 +211,16 @@ void _triangulos3D::colors_chess(float r1, float g1, float b1, float r2,
 //*************************************************************************
 
   void _triangulos3D::calcular_normales_caras(){
-    int i, n_c;
-    n_c = caras.size();
-    normales_caras.resize(n_c);
+    int n_c;
     _vertex3f vector_a, vector_b, aux;
     float modulo;
 
-    for (i=0; i < n_c; i++){
+    n_c = caras.size();
+    normales_caras.resize(n_c);
+
+    for (int i=0; i < n_c; i++){
       vector_a = vertices[caras[i]._1]-vertices[caras[i]._0];
-      vector_a = vertices[caras[i]._2]-vertices[caras[i]._0];
+      vector_b = vertices[caras[i]._2]-vertices[caras[i]._0];
 
       //Producto vectorial (determinante)
       aux.x = vector_a.y * vector_b.z - vector_a.z * vector_b.y;
@@ -247,6 +248,7 @@ void _triangulos3D::colors_chess(float r1, float g1, float b1, float r2,
   void _triangulos3D::color_lambert_c(float l_x, float l_y, float l_z, float r, float g, float b){
     int i, n_c;
     n_c = caras.size();
+    colores_caras.resize(n_c);
     normales_caras.resize(n_c);
     _vertex3f aux_luz, luz;
     float modulo, p_escalar;
@@ -256,7 +258,7 @@ void _triangulos3D::colors_chess(float r1, float g1, float b1, float r2,
     aux_luz.z = l_z; 
 
     for(i = 0; i < n_c; i++){
-      luz = luz - vertices[caras[i]._0];
+      luz = aux_luz - vertices[caras[i]._0];
       modulo = sqrt(luz.x*luz.x + luz.y*luz.y + luz.z*luz.z);
 
       luz.x = luz.x/modulo;
@@ -466,7 +468,7 @@ void _objeto_ply::parametros(char *archivo) {
 
   // colores para las caras
   //colors_random();
-  //color_lambert_c (0, 10, 40, 1.0 ,0.0, 0);
+  color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
 
 }
 
@@ -507,12 +509,13 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
   for (j = 0; j < num; j++) {
     for (i = 0; i < num_aux; i++) {
       vertice_aux.x =
-          perfil[i].x *
-              cos(2.0 * M_PI * j / (1.0 * num)) +  // 360º (en radianes) /num
+          perfil[i].x * cos(2.0 * M_PI * j / (1.0 * num)) +  // 360º (en radianes) /num
           perfil[i].z * sin(2.0 * M_PI * j / (1.0 * num));
-      vertice_aux.z = -perfil[i].x * sin(2.0 * M_PI * j / (1.0 * num)) +
-                      perfil[i].z * cos(2.0 * M_PI * j / (1.0 * num));
+      vertice_aux.z = 
+          -perfil[i].x * sin(2.0 * M_PI * j / (1.0 * num)) +
+          perfil[i].z * cos(2.0 * M_PI * j / (1.0 * num));
       vertice_aux.y = perfil[i].y;
+      
       vertices[i + j * num_aux] = vertice_aux;
     }
   }
@@ -545,13 +548,6 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
       c++;
     }
   }
-
-  //normales a caras
-  calcular_normales_caras();
-
-  // colores para las caras
-  //colors_random();
-  color_lambert_c (0, 10, 40, 1.0 ,0.4, 0.5);
 
   int total_matriz = num_aux * num;
 
@@ -592,11 +588,18 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
 
       c++;
     }
+
+     //normales a caras
+      calcular_normales_caras();
+
+      // colores para las caras
+      //colors_random();
+      color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
   }
 
   // Colores para los vertices
   colores_vertices.resize(total_matriz);  // color entre 0 y 1
-  for (int i = 0; i < total_matriz; i++) {
+  for (int i = 0; i < 5; i++) {
     colores_vertices[i].r = rand() % 1000 / 1000.0;
     colores_vertices[i].g = rand() % 1000 / 1000.0;
     colores_vertices[i].b = rand() % 1000 / 1000.0;
@@ -726,6 +729,7 @@ void _rotacion_PLY::parametros_PLY(char *archivo, int num) {
   _file_ply::read(archivo, ver_ply, car_ply);
 
   n_ver = ver_ply.size() / 3;
+  n_car=car_ply.size()/3;
 
   printf("Number of vertices=%d\nNumber of faces=%d\n", n_ver, n_car);
 

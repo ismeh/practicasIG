@@ -494,7 +494,7 @@ int main(int argc, char *argv[]) {
 
   // llamada para crear la ventana, indicando el titulo (no se visualiza hasta
   // que se llama al bucle de eventos)
-  glutCreateWindow("PRACTICA - 4");
+  glutCreateWindow("PRACTICA - 3");
 
   // asignación de la funcion llamada "dibujar" al evento de dibujo
   glutDisplayFunc(draw);
@@ -510,7 +510,7 @@ int main(int argc, char *argv[]) {
   initialize();
 
   // creación del objeto ply - codigo beethoven
-  // ply.parametros(argv[2]);
+  ply.parametros(argv[2]);
 
   // creación del objeto ply - codigo mi_archivo.ply
   mi_ply.parametros_PLY(argv[1], 8);

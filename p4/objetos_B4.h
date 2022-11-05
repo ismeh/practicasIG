@@ -63,7 +63,6 @@ class _triangulos3D : public _puntos3D {
   //Vectores para las normales
   vector<_vertex3f> normales_caras;
   vector<_vertex3f> normales_vertices;
-
 };
 
 //*************************************************************************
