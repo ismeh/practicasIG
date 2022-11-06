@@ -83,6 +83,12 @@ class _piramide : public _triangulos3D {
   _piramide(float tam = 0.5, float al = 1.0);
 };
 
+class _objPrueba1 : public _triangulos3D {
+  public:
+    _objPrueba1(float tam = 0.5, float al = 1.0);
+};
+
+
 //*************************************************************************
 // clase objeto ply
 //*************************************************************************
@@ -125,6 +131,12 @@ class _cono : public _rotacion {
 class _esfera : public _rotacion {
  public:
   _esfera(float radio, int num1, int num2);
+};
+
+// esfera
+class _objPrueba2 : public _rotacion {
+ public:
+  _objPrueba2(float r1=0.4, float r2=0.6, int num1=8, int num2=8);
 };
 
 //************************************************************************

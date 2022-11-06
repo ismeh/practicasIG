@@ -708,8 +708,7 @@ _esfera::_esfera(float radio, int num1, int num2) {
 
   // Empezamos en 1 pa no repetir el punto inferior muchas veces
   for (i = 1; i < num1; i++) {
-    aux.x = radio * cos(M_PI * i / num1 * 1.0 -
-                        M_PI / 2.0);  // Media vuelta empezando en -pi/2
+    aux.x = radio * cos(M_PI * i / num1 * 1.0 - M_PI / 2.0);  // Media vuelta empezando en -pi/2
     aux.y = radio * sin(M_PI * i / num1 * 1.0 - M_PI / 2.0);
     aux.z = 0.0;
     perfil.push_back(aux);
@@ -1203,4 +1202,146 @@ void _soldado::draw(_modo modo, float r, float g, float b, float grosor){
       cabeza.draw(modo, r, g, b, grosor);
     glPopMatrix();
   glPopMatrix();
+}
+
+///////////////////////
+//Examen de prueba
+///////////////////////
+//Ejercicio 1
+
+_objPrueba1::_objPrueba1(float tam, float al) {
+  // vertices
+  int n_vertices = 5+4;
+  vertices.resize(n_vertices);
+  vertices[0].x = -tam;
+  vertices[0].y = 0;
+  vertices[0].z = tam;
+  vertices[1].x = tam;
+  vertices[1].y = 0;
+  vertices[1].z = tam;
+  vertices[2].x = tam;
+  vertices[2].y = 0;
+  vertices[2].z = -tam;
+  vertices[3].x = -tam;
+  vertices[3].y = 0;
+  vertices[3].z = -tam;
+  vertices[4].x = 0;
+  vertices[4].y = al;
+  vertices[4].z = 0;
+  ////
+  vertices[5].x = -tam/2;
+  vertices[5].y = -al/2;
+  vertices[5].z = tam/2;
+  vertices[6].x = tam/2;
+  vertices[6].y = -al/2;
+  vertices[6].z = tam/2;
+  vertices[7].x = tam/2;
+  vertices[7].y = -al/2;
+  vertices[7].z = -tam/2;
+  vertices[8].x = -tam/2;
+  vertices[8].y = -al/2;
+  vertices[8].z = -tam/2;
+
+  // Colores para los vertices
+  colores_vertices.resize(n_vertices);  // color entre 0 y 1
+  for (int i = 0; i < n_vertices; i++) {
+    colores_vertices[i].r = rand() % 1000 / 1000.0;
+    colores_vertices[i].g = rand() % 1000 / 1000.0;
+    colores_vertices[i].b = rand() % 1000 / 1000.0;
+  }
+
+  int n_caras = 13;
+  caras.resize(n_caras);
+  caras[0]._0 = 0;
+  caras[0]._1 = 1;
+  caras[0]._2 = 4;
+  caras[1]._0 = 1;
+  caras[1]._1 = 2;
+  caras[1]._2 = 4;
+  caras[2]._0 = 2;
+  caras[2]._1 = 3;
+  caras[2]._2 = 4;
+  caras[3]._0 = 3;
+  caras[3]._1 = 0;
+  caras[3]._2 = 4;
+  // caras[4]._0 = 3;
+  // caras[4]._1 = 1;
+  // caras[4]._2 = 0;
+  // caras[5]._0 = 3;
+  // caras[5]._1 = 2;
+  // caras[5]._2 = 1;
+  caras[4]._0 = 5;
+  caras[4]._1 = 6;
+  caras[4]._2 = 0;
+  caras[5]._0 = 0;
+  caras[5]._1 = 1;
+  caras[5]._2 = 6;
+
+  caras[6]._0 = 6;
+  caras[6]._1 = 7;
+  caras[6]._2 = 1;
+  caras[7]._0 = 1;
+  caras[7]._1 = 2;
+  caras[7]._2 = 7;
+
+  caras[8]._0 = 2;
+  caras[8]._1 = 3;
+  caras[8]._2 = 7;
+  caras[9]._0 = 7;
+  caras[9]._1 = 3;
+  caras[9]._2 = 8;
+
+  caras[10]._0 = 0;
+  caras[10]._1 = 3;
+  caras[10]._2 = 8;
+  caras[11]._0 = 8;
+  caras[11]._1 = 5;
+  caras[11]._2 = 0;
+
+  caras[12]._0 = 5;
+  caras[12]._1 = 6;
+  caras[12]._2 = 8;
+  caras[13]._0 = 8;
+  caras[13]._1 = 6;
+  caras[13]._2 = 7;
+
+  // colores para las caras
+  colors_random();
+
+}
+
+
+//Ejercicio 2
+// num1 -> Numero lineas paralelas (puntos del perfil)
+// num2 -> Numero giros 
+_objPrueba2::_objPrueba2(float r1, float r2, int num1, int num2) {
+  //vector<_vertex3f> perfil1;
+  //vector<_vertex3f> perfil2;
+  vector<_vertex3f> perfil3;
+
+  _vertex3f aux;
+  int i;
+  //parametros(perfil1, num2, 0, 0, 1);
+
+  //Esfera de abajo
+  for (i = 1; i <= num1/2; i++) {
+    aux.x = r2 * cos(M_PI * i / num1 * 1.0 - M_PI / 2.0);
+    aux.y = -r1 + r2 * sin(M_PI * i / num1 * 1.0 - M_PI / 2.0);
+    aux.z = 0.0;
+    //perfil2.push_back(aux);
+    perfil3.push_back(aux);
+  }
+
+  //Esfera de arriba (pequeña)
+  // Empezamos en 1 pa no repetir el punto inferior muchas veces
+  for (i = 1; i <= num1/2; i++) {
+    aux.x = r2 + r1 * cos(M_PI * i / num1 * 1.0 - M_PI / 2.0);
+    aux.y = r1 * sin(M_PI * i / num1 * 1.0 - M_PI / 2.0);
+    aux.z = 0.0;
+    //perfil1.push_back(aux);
+    perfil3.push_back(aux);
+  }
+
+  perfil3.push_back({0,0,0});
+  parametros(perfil3, num2, 2, 1, 0);
 }

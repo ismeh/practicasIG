@@ -25,7 +25,9 @@ typedef enum {
   CONO,
   ESFERA,
   EXCAVADORA,
-  SOLDADO
+  SOLDADO,
+  OBJ_PRUEBA1,
+  OBJ_PRUEBA2
 } _tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
@@ -53,6 +55,8 @@ _esfera esfera(1, 6, 6);
 _rotacion_PLY mi_ply;
 _excavadora excavadora;
 _soldado soldado;
+_objPrueba1 objPrueba1;
+_objPrueba2 objPrueba2;
 
 // _objeto_ply *ply;
 
@@ -188,6 +192,12 @@ void draw_objects() {
     case SOLDADO:
       soldado.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
+    case OBJ_PRUEBA1:
+      objPrueba1.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
+    case OBJ_PRUEBA2:
+      objPrueba2.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
   }
 }
 
@@ -296,6 +306,12 @@ void normal_key(unsigned char Tecla1, int x, int y) {
         soldado.activadaRotacion = true;
       else
         soldado.activadaRotacion = false;
+      break;
+    case 'F':
+      t_objeto = OBJ_PRUEBA1;
+      break;
+    case 'G':
+      t_objeto = OBJ_PRUEBA2;
       break;
     
   }
