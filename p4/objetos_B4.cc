@@ -464,11 +464,11 @@ void _objeto_ply::parametros(char *archivo) {
   }
 
   //normales a caras
-  calcular_normales_caras();
+  //calcular_normales_caras();
 
   // colores para las caras
-  //colors_random();
-  color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
+  colors_random();
+  //color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
 
 }
 
@@ -533,9 +533,7 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
   int c = 0;
 
   for (int j = 0; j < num; j++) {
-    for (int i = 0; i < num_aux - 1;
-         i++) {  // -1 porque es el número de segmentos que se pueden crear
-                 // entre los puntos del perfil.
+    for (int i = 0; i < num_aux - 1; i++) {  // -1 porque es el número de segmentos que se pueden crear entre los puntos del perfil.
       caras[c]._0 = i + j * num_aux;
       caras[c]._1 = ((j + 1) % num) * num_aux + i;
       caras[c]._2 = 1 + i + j * num_aux;
@@ -588,22 +586,22 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
 
       c++;
     }
-
-     //normales a caras
-      calcular_normales_caras();
-
-      // colores para las caras
-      //colors_random();
-      color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
   }
 
   // Colores para los vertices
   colores_vertices.resize(total_matriz);  // color entre 0 y 1
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < total_matriz; i++) {
     colores_vertices[i].r = rand() % 1000 / 1000.0;
     colores_vertices[i].g = rand() % 1000 / 1000.0;
     colores_vertices[i].b = rand() % 1000 / 1000.0;
   }
+
+  //normales a caras
+  calcular_normales_caras();
+
+  // colores para las caras
+  // colors_random();
+  color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
 }
 
 //************************************************************************
@@ -1343,5 +1341,48 @@ _objPrueba2::_objPrueba2(float r1, float r2, int num1, int num2) {
   }
 
   perfil3.push_back({0,0,0});
-  parametros(perfil3, num2, 2, 1, 0);
+  parametros(perfil3, num2, 2, 0, 0);
+}
+
+//Ejercicio 3
+_objPrueba3::_objPrueba3(){
+  ancho = alto = fondo = 1;
+
+  base.colors_random();
+  arriba.colors_random();
+  vertical.colors_random();
+  horizontal.colors_random();
+}
+
+void _objPrueba3::draw(_modo modo, float r, float g, float b, float grosor){
+  glPushMatrix();
+
+    glTranslatef(0, alto/2, 0);
+    glPushMatrix();
+      glScalef(ancho,alto,fondo);
+      base.draw(modo,r,g,b,grosor);
+    glPopMatrix();
+
+    glTranslatef(ancho/2, alto/2 + alto/4, fondo/2);
+    glPushMatrix();
+      glScalef(ancho/2,alto/2,fondo/2);
+      arriba.draw(modo,r,g,b,grosor);
+    glPopMatrix();
+
+    glTranslatef(0, alto/4 + alto/4, 0);
+    glPushMatrix();
+      glScalef(ancho/8,alto/2,fondo/8);
+      vertical.draw(modo,r,g,b,grosor);
+    glPopMatrix();
+
+    glTranslatef(0, alto/4 + alto/4, 0);
+    glPushMatrix();
+      glTranslatef(-alto/2 + ancho/8, ancho/6,0);
+      glRotatef(90,0,0,1);
+      glScalef(ancho/6,alto/2,fondo/6);
+      horizontal.draw(modo,r,g,b,grosor);
+    glPopMatrix();
+
+
+  glPopMatrix();
 }

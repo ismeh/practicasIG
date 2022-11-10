@@ -27,7 +27,8 @@ typedef enum {
   EXCAVADORA,
   SOLDADO,
   OBJ_PRUEBA1,
-  OBJ_PRUEBA2
+  OBJ_PRUEBA2,
+  OBJ_PRUEBA3
 } _tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
@@ -57,6 +58,7 @@ _excavadora excavadora;
 _soldado soldado;
 _objPrueba1 objPrueba1;
 _objPrueba2 objPrueba2;
+_objPrueba3 objPrueba3;
 
 // _objeto_ply *ply;
 
@@ -198,6 +200,9 @@ void draw_objects() {
     case OBJ_PRUEBA2:
       objPrueba2.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
+    case OBJ_PRUEBA3:
+      objPrueba3.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
   }
 }
 
@@ -312,6 +317,9 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       break;
     case 'G':
       t_objeto = OBJ_PRUEBA2;
+      break;
+    case 'H':
+      t_objeto = OBJ_PRUEBA3;
       break;
     
   }

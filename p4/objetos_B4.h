@@ -372,10 +372,6 @@ class _piernaDch : public _triangulos3D{
   _cubo cubo;
 };
 
-
-
-
-
 class _soldado : public _triangulos3D{
   public:
     float giro_cabeza;
@@ -414,6 +410,22 @@ class _soldado : public _triangulos3D{
     _escudo escudo;
     _espada espada;
 
+};
+
+class _objPrueba3 : public _triangulos3D{
+  public:
+    float ancho;
+    float alto;
+    float fondo;
+
+    _objPrueba3();
+    void draw(_modo modo, float r, float g, float b, float grosor);
+
+  protected:
+   _cubo base;
+   _cubo arriba;
+   _cilindro vertical;
+   _cilindro horizontal;
 };
 
 
