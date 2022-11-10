@@ -28,7 +28,8 @@ typedef enum {
   SOLDADO,
   OBJ_PRUEBA1,
   OBJ_PRUEBA2,
-  OBJ_PRUEBA3
+  OBJ_PRUEBA3,
+  OBJ_PRUEBA4
 } _tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
@@ -59,6 +60,7 @@ _soldado soldado;
 _objPrueba1 objPrueba1;
 _objPrueba2 objPrueba2;
 _objPrueba3 objPrueba3;
+_objPrueba4 objPrueba4;
 
 // _objeto_ply *ply;
 
@@ -203,6 +205,9 @@ void draw_objects() {
     case OBJ_PRUEBA3:
       objPrueba3.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
+    case OBJ_PRUEBA4:
+      objPrueba4.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
   }
 }
 
@@ -321,6 +326,9 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'H':
       t_objeto = OBJ_PRUEBA3;
       break;
+    case 'J':
+      t_objeto = OBJ_PRUEBA4;
+      break;
     
   }
   glutPostRedisplay();
@@ -362,12 +370,16 @@ void special_key(int Tecla1, int x, int y) {
       soldado.giro_cabeza += 5;
       if (soldado.giro_cabeza > soldado.giro_cabeza_max)
         soldado.giro_cabeza = soldado.giro_cabeza_max;
+      
+      objPrueba4.giro1 += 5;
       break;
     case GLUT_KEY_F2:
       excavadora.giro_cabina -= 5;
       soldado.giro_cabeza -= 5;
       if (soldado.giro_cabeza < -soldado.giro_cabeza_max)
         soldado.giro_cabeza = -soldado.giro_cabeza_max;
+
+      objPrueba4.giro1 -= 5;
       break;
     case GLUT_KEY_F3:
       excavadora.giro_primer_brazo += 1;
@@ -375,6 +387,8 @@ void special_key(int Tecla1, int x, int y) {
         soldado.giro_brazoIzq += 2.5;
       if (soldado.giro_brazoIzq > soldado.giro_brazo_max)
         soldado.giro_brazoIzq = soldado.giro_brazo_max;
+
+      objPrueba4.transformacion2 += 0.1;
       break;
     case GLUT_KEY_F4:
       excavadora.giro_primer_brazo -= 1;
@@ -383,6 +397,8 @@ void special_key(int Tecla1, int x, int y) {
         soldado.giro_brazoIzq = soldado.giro_brazo_min;
       if (excavadora.giro_primer_brazo < excavadora.giro_primer_brazo_min)
         excavadora.giro_primer_brazo = excavadora.giro_primer_brazo_min;
+
+      objPrueba4.transformacion2 -= 0.1;
       break;
     case GLUT_KEY_F5:
       excavadora.giro_segundo_brazo += 1;

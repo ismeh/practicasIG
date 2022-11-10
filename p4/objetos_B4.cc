@@ -1386,3 +1386,54 @@ void _objPrueba3::draw(_modo modo, float r, float g, float b, float grosor){
 
   glPopMatrix();
 }
+
+// Ejercicio prueba 4
+_objPrueba4::_objPrueba4(){
+  ancho = alto = fondo = 1;
+  giro1 = 0;
+  transformacion2 = 0;
+
+  base.colors_random();
+  arriba.colors_random();
+  tumbado.colors_random();
+  cono.colors_random();
+}
+
+void _objPrueba4::draw(_modo modo, float r, float g, float b, float grosor){
+  glPushMatrix();
+
+    glTranslatef(0, alto/2, 0);
+    glPushMatrix();
+      glScalef(ancho,alto,fondo);
+      base.draw(modo,r,g,b,grosor);
+    glPopMatrix();
+
+    glPushMatrix();
+
+      glTranslatef(ancho/2, alto/2 + alto/4, fondo/2);
+      glRotatef(giro1,0,1,0);
+      glPushMatrix();
+        glScalef(ancho/2,alto/2,fondo/2);
+        arriba.draw(modo,r,g,b,grosor);
+      glPopMatrix();
+
+      glPushMatrix();
+        glTranslatef(0, alto/4 + alto/4 + transformacion2*cos(45), fondo/4 + transformacion2*cos(45));
+        glRotatef(45,1,0,0);
+        glPushMatrix();
+          glScalef(ancho/12,alto/2 + transformacion2,fondo/12);
+          tumbado.draw(modo,r,g,b,grosor);
+        glPopMatrix();
+
+        glTranslatef(0, alto/4 + alto/4, 0);
+        glPushMatrix();
+          glTranslatef(0, -ancho/12 + transformacion2*cos(45),-fondo/6 + transformacion2*cos(45));
+          glRotatef(90,1,0,0);
+          glScalef(ancho/6,alto/2,fondo/6);
+          cono.draw(modo,r,g,b,grosor);
+        glPopMatrix();
+      glPopMatrix();
+    glPopMatrix();
+  glPopMatrix();
+}
+

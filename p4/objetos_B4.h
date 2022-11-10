@@ -124,7 +124,7 @@ class _cilindro : public _rotacion {
 // cono
 class _cono : public _rotacion {
  public:
-  _cono(float radio, float altura, int num);
+  _cono(float radio = 1.0, float altura = 2.0, int num=12);
 };
 
 // esfera
@@ -426,6 +426,25 @@ class _objPrueba3 : public _triangulos3D{
    _cubo arriba;
    _cilindro vertical;
    _cilindro horizontal;
+};
+
+class _objPrueba4 : public _triangulos3D{
+  public:
+    float ancho;
+    float alto;
+    float fondo;
+
+    float giro1;
+    float transformacion2;
+
+    _objPrueba4();
+    void draw(_modo modo, float r, float g, float b, float grosor);
+
+  protected:
+   _cubo base;
+   _cubo arriba;
+   _cilindro tumbado;
+   _cono cono;
 };
 
 
