@@ -1,68 +1,72 @@
 README	
-Información de las teclas usables para el examen y la práctica 3
-Autor: Ismael Tengo Rodríguez - 3º B - Ingeniería Informática
-
-	Examen de Prácticas
-		Teclas
-			F - Ejercicio 1
-			G - Ejercicio 2
-			H - Ejercicio 3
-				F1/F2 -> +- 1º grado libertad
-				F3/F4 -> +- 2º grado libertad
-
+Información de las teclas usables para la práctica 4
+Autor  Ismael Tengo Rodríguez - 3º B - Ingeniería Informática
 				
-	Práctica 3
+	Práctica 4
+		Luces
+			Luz blanca fija
+			Luces en movimiento
+				Activar	
+					Tecla I
+				Mover
+					Tecla F9 y F10
+				Roja
+				Azul - +180º de diferencia
+						
 		Objeto creado - Soldado (con cubos)
 			Teclas Soldado
 				F1-F8
 					Articulaciones
-				A
-			      t_objeto = SOLDADO
-			      
-		     	S
-			      if(soldado.animacion == false)
-			        soldado.animacion = true
-			      else
-			        soldado.animacion = false
-			      
-		     	D
-			      if(soldado.activadaRotacion == false)
-			        soldado.activadaRotacion = true
-			      else
-			        soldado.activadaRotacion = false
 
 		Teclas Generales
-			 1
-		      modo = POINTS
-		     2
-		      modo = EDGES
-		     3
-		      modo = SOLID
-		     4
-		      modo = SOLID_COLORS
-		     5
-		      modo = SOLID_COLORS_VERTEX
-		     6
-		      modo = SOLID_COLORS1
-		     P
-		      t_objeto = PIRAMIDE
-		     C
-		      t_objeto = CUBO
-		     O
-		      t_objeto = OBJETO_PLY
-		     R
-		      t_objeto = ROTACION
-		     X
-		      t_objeto = EXTRUSION
-		     W
-		      t_objeto = CILINDRO
-		     Z
-		      t_objeto = ESFERA
-		     E
-		      t_objeto = CONO
-		     M
-		      t_objeto = ROTACION_PLY
-		     B
-		      t_objeto = EXCAVADORA
-		      
-		     
+			 Q 
+			  exit(0)
+			 1 
+			  POINTS
+			 2 
+			  EDGES
+			 3 
+			  SOLID
+			 4 
+			  SOLID_COLORS
+			 5 
+			  SOLID_FLAT
+			 6 
+			  SOLID_SMOOTH
+			 7 
+			  SOLID_COLORS1
+			 8 
+			  SOLID_COLORS_VERTEX
+			 P 
+			   PIRAMIDE
+			 C 
+			   CUBO
+			 O 
+			   OBJETO_PLY
+			 R 
+			   ROTACION
+			 X 
+			   EXTRUSION
+			 L 
+			   CILINDRO
+			 E 
+			   ESFERA
+			 N 
+			   CONO
+			 M 
+			   ROTACION_PLY
+			 A 
+			   SOLDADO
+			 S 
+				Animacion soldado ON/OFF
+			 D 
+				Rotacion Soldado ON/OFF
+			 F 
+			   OBJ_EXAMEN1
+			 G 
+			   OBJ_EXAMEN2
+			 H 
+			   OBJ_EXAMEN3
+			 I 
+				Luces con movimiento ON/OFF
+					

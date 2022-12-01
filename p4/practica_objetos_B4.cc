@@ -29,7 +29,10 @@ typedef enum {
   OBJ_PRUEBA1,
   OBJ_PRUEBA2,
   OBJ_PRUEBA3,
-  OBJ_PRUEBA4
+  OBJ_PRUEBA4,
+  OBJ_EXAMEN1,
+  OBJ_EXAMEN2,
+  OBJ_EXAMEN3
 } _tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
@@ -44,6 +47,8 @@ GLfloat Size_x, Size_y, Front_plane, Back_plane;
 
 // variables que determninan la posicion y tamaño de la ventana X
 int Window_x = 50, Window_y = 50, Window_width = 650, Window_high = 650;
+float movimiento_camara = 0;
+bool activada_luz2 = false;
 
 // objetos
 _cubo cubo;
@@ -61,6 +66,10 @@ _objPrueba1 objPrueba1;
 _objPrueba2 objPrueba2;
 _objPrueba3 objPrueba3;
 _objPrueba4 objPrueba4;
+_objExamen1 objExamen1;
+_objExamen2 objExamen2;
+_objExamen3 objExamen3;
+
 
 // _objeto_ply *ply;
 
@@ -196,28 +205,92 @@ void draw_objects() {
     case SOLDADO:
       soldado.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
-    case OBJ_PRUEBA1:
-      objPrueba1.draw(modo, 1.0, 0.0, 0.0, 5);
+    case OBJ_EXAMEN1:
+      objExamen1.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
-    case OBJ_PRUEBA2:
-      objPrueba2.draw(modo, 1.0, 0.0, 0.0, 5);
+    case OBJ_EXAMEN2:
+      objExamen2.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
-    case OBJ_PRUEBA3:
-      objPrueba3.draw(modo, 1.0, 0.0, 0.0, 5);
+    case OBJ_EXAMEN3:
+      objExamen3.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
-    case OBJ_PRUEBA4:
-      objPrueba4.draw(modo, 1.0, 0.0, 0.0, 5);
-      break;
+    // case OBJ_PRUEBA4:
+    //   objPrueba4.draw(modo, 1.0, 0.0, 0.0, 5);
+    //   break;
   }
 }
 
+
 //**************************************************************************
-//
+//  Función que gestiona la luz
+//***************************************************************************
+//Alpha = Rotacion luz 2
+//La luz 2 se activa con la I y se rota con la O y la P
+void luces(float alpha){ 
+  //Luz blanca
+  GLfloat luz_ambiente  [] = {0.2,0.2,0.2,1.0}, //luz indirecta - rgb, transparencia
+          luz_difusa    [] = {1.0,1.0,1.0,1.0}, //color
+          luz_especular [] = {1.0,1.0,1.0,1.0}, //brillo
+          luz_posicion  [] = {X_LAMBERT , Y_LAMBERT , Z_LAMBERT,1.0};// xyz, ultimo parametro = 0 si luz en el infinito, rayos paralelos | luz puntual = 1
+
+  glLightfv(GL_LIGHT1, GL_AMBIENT, luz_ambiente);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_difusa);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, luz_especular);
+
+  glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion);
+
+  //2º luz - con movimiento
+  if(activada_luz2){
+    //luz roja
+    GLfloat luz_ambiente2[] = {0.0,0.0,0.0,1.0}, // rgb, transparencia -   
+          luz_difusa2    [] = {1.0,0.0,0.0,1.0}, 
+          luz_especular2 [] = {1.0,0.0,0.0,1.0}, //reflejo
+          luz_posicion2  [] = {0.0,5.0,20.0,1.0};// xyz, ultimo parametro = 0 si luz en el infinito, rayos paralelos | luz puntual = 1
+
+    glLightfv(GL_LIGHT2, GL_AMBIENT, luz_ambiente2);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, luz_difusa2);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, luz_especular2);
+
+    glPushMatrix();
+      glRotatef(alpha,0,1,0); //Rotacion de la luz
+      glLightfv(GL_LIGHT2, GL_POSITION, luz_posicion2);
+    glPopMatrix();
+
+    //luz azul
+    GLfloat luz_ambiente3[] = {0.0,0.0,0.0,1.0}, // rgb, transparencia -   
+          luz_difusa3    [] = {0.0,0.0,1.0,1.0}, 
+          luz_especular3 [] = {0.0,0.0,1.0,1.0}, //reflejo
+          luz_posicion3  [] = {0.0,5.0,20.0,1.0};// xyz, ultimo parametro = 0 si luz en el infinito, rayos paralelos | luz puntual = 1
+
+    glLightfv(GL_LIGHT3, GL_AMBIENT, luz_ambiente3);
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, luz_difusa3);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, luz_especular3);
+
+    glPushMatrix();
+      glRotatef(alpha,0,1,0); //Rotacion de la luz
+      glRotatef(180,0,1,0); //Rotacion de la luz
+      glLightfv(GL_LIGHT3, GL_POSITION, luz_posicion3);
+    glPopMatrix();
+
+    glEnable(GL_LIGHT2);
+    glEnable(GL_LIGHT3);
+  }
+  else{
+    glDisable(GL_LIGHT2);
+    glDisable(GL_LIGHT3);
+  }
+  glEnable(GL_LIGHT1);
+  glDisable(GL_LIGHT0);
+}
+
+//**************************************************************************
+//  Función que pinta los objetos
 //***************************************************************************
 
 void draw(void) {
   clean_window();
-  change_observer();
+  change_observer(); 
+  luces(movimiento_camara);
   draw_axis();
   draw_objects();
   glutSwapBuffers();
@@ -267,10 +340,16 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       modo = SOLID_COLORS;
       break;
     case '5':
-      modo = SOLID_COLORS_VERTEX;
+      modo = SOLID_FLAT;
       break;
     case '6':
+      modo = SOLID_SMOOTH;
+      break;
+    case '7':
       modo = SOLID_COLORS1;
+      break;
+    case '8':
+      modo = SOLID_COLORS_VERTEX;
       break;
     case 'P':
       t_objeto = PIRAMIDE;
@@ -287,21 +366,21 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'X':
       t_objeto = EXTRUSION;
       break;
-    case 'W':
+    case 'L':
       t_objeto = CILINDRO;
       break;
-    case 'Z':
+    case 'E':
       t_objeto = ESFERA;
       break;
-    case 'E':
+    case 'N':
       t_objeto = CONO;
       break;
     case 'M':
       t_objeto = ROTACION_PLY;
       break;
-    case 'B':
-      t_objeto = EXCAVADORA;
-      break;
+    // case 'B':
+    //   t_objeto = EXCAVADORA;
+    //   break;
     case 'A':
       t_objeto = SOLDADO;
       break;
@@ -318,17 +397,20 @@ void normal_key(unsigned char Tecla1, int x, int y) {
         soldado.activadaRotacion = false;
       break;
     case 'F':
-      t_objeto = OBJ_PRUEBA1;
+      t_objeto = OBJ_EXAMEN1;
       break;
     case 'G':
-      t_objeto = OBJ_PRUEBA2;
+      t_objeto = OBJ_EXAMEN2;
       break;
     case 'H':
-      t_objeto = OBJ_PRUEBA3;
+      t_objeto = OBJ_EXAMEN3;
       break;
-    case 'J':
-      t_objeto = OBJ_PRUEBA4;
+    case 'I':
+      activada_luz2 = activada_luz2==true ? false : true;
       break;
+    // case 'J':
+    //   t_objeto = OBJ_PRUEBA4;
+    //   break;
     
   }
   glutPostRedisplay();
@@ -372,6 +454,7 @@ void special_key(int Tecla1, int x, int y) {
         soldado.giro_cabeza = soldado.giro_cabeza_max;
       
       objPrueba4.giro1 += 5;
+      objExamen3.transformacion1 += 0.1;
       break;
     case GLUT_KEY_F2:
       excavadora.giro_cabina -= 5;
@@ -380,6 +463,7 @@ void special_key(int Tecla1, int x, int y) {
         soldado.giro_cabeza = -soldado.giro_cabeza_max;
 
       objPrueba4.giro1 -= 5;
+      objExamen3.transformacion1 -= 0.1;
       break;
     case GLUT_KEY_F3:
       excavadora.giro_primer_brazo += 1;
@@ -389,6 +473,8 @@ void special_key(int Tecla1, int x, int y) {
         soldado.giro_brazoIzq = soldado.giro_brazo_max;
 
       objPrueba4.transformacion2 += 0.1;
+      objExamen3.giro1 += 5;
+
       break;
     case GLUT_KEY_F4:
       excavadora.giro_primer_brazo -= 1;
@@ -399,6 +485,7 @@ void special_key(int Tecla1, int x, int y) {
         excavadora.giro_primer_brazo = excavadora.giro_primer_brazo_min;
 
       objPrueba4.transformacion2 -= 0.1;
+      objExamen3.giro1 -= 5;
       break;
     case GLUT_KEY_F5:
       excavadora.giro_segundo_brazo += 1;
@@ -431,6 +518,12 @@ void special_key(int Tecla1, int x, int y) {
       excavadora.giro_pala -= 1;
       if (excavadora.giro_pala < excavadora.giro_pala_min)
         excavadora.giro_pala = excavadora.giro_pala_min;
+      break;
+    case GLUT_KEY_F9:
+      movimiento_camara += 5;
+      break;
+    case GLUT_KEY_F10:
+      movimiento_camara -= 5;
       break;
   }
   glutPostRedisplay();

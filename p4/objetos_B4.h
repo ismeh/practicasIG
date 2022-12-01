@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "vertex.h"
+const int X_LAMBERT = 0, Y_LAMBERT = -20, Z_LAMBERT = -60;
 
 const float AXIS_SIZE = 5000;
 typedef enum {
@@ -16,7 +17,9 @@ typedef enum {
   SOLID,
   SOLID_COLORS,
   SOLID_COLORS_VERTEX,
-  SOLID_COLORS1
+  SOLID_COLORS1,
+  SOLID_FLAT,
+  SOLID_SMOOTH
 } _modo;
 
 //*************************************************************************
@@ -33,17 +36,31 @@ class _puntos3D {
 };
 
 //*************************************************************************
+// struct material
+//*************************************************************************
+struct material
+{
+  _vertex4f ambiente_difuso;
+  _vertex4f ambiente_especular;
+  float brillo;
+};
+
+
+//*************************************************************************
 // clase triángulo
 //*************************************************************************
 
 class _triangulos3D : public _puntos3D {
  public:
+
   _triangulos3D();
   void draw_aristas(float r, float g, float b, int grosor);
   void draw_solido(float r, float g, float b);
   void draw_solido_colores();
   void draw_solido_colores_vertices();
   void draw_solido_colors1();
+  void draw_solido_plano();
+  void draw_solido_suave();
   void draw(_modo modo, float r, float g, float b, float grosor);
 
   /* asignación de colores */
@@ -63,6 +80,26 @@ class _triangulos3D : public _puntos3D {
   //Vectores para las normales
   vector<_vertex3f> normales_caras;
   vector<_vertex3f> normales_vertices;
+
+  //Material del objeto (4 componentes, rgb + alpha)
+  //gl ambient
+  _vertex4f ambiente_difuso;  //color del objeto
+  _vertex4f ambiente_especular;//color del objeto ante una luz
+  //fisicamente ambientee y difusa son iguales
+  // en opengl
+  float brillo;
+
+  //Cambiar material
+  void cambiarMaterial(_vertex4f difuso, _vertex4f especular, float brillo);
+  void cambiarMaterial(material m);
+
+  //Materiales
+  //material x = {{,1.0}, {,1.0}, 51.2};
+  material silver = {{0.50754,0.50754,0.50754,1.0}, {0.588273,0.588273,0.588273,1.0}, 51.2};
+  material gold = {{0.75164,0.60648,0.22648, 1.0}, {0.628281,0.555802,0.366065, 1.0}, 51.2};
+  material jade = {{0.54,0.89,0.66,0.95}, {0.316228,0.316228,0.316228,0.95}, 12.8};
+  material cuero = {{0.5,0.25,0,1.0}, {0,0,0,1.0}, 12.2};
+  material madera = {{0.65,0.43,0.36,1.0}, {0.3,0.2,0.15,1.0}, 20.2};
 };
 
 //*************************************************************************
@@ -130,7 +167,7 @@ class _cono : public _rotacion {
 // esfera
 class _esfera : public _rotacion {
  public:
-  _esfera(float radio, int num1, int num2);
+  _esfera(float radio=1, int num1=8, int num2=8);
 };
 
 // esfera
@@ -447,4 +484,34 @@ class _objPrueba4 : public _triangulos3D{
    _cono cono;
 };
 
+///////////////////////////////
+//  Examen 10-11-2022
+///////////////////////////////
 
+class _objExamen1 : public _triangulos3D {
+  public:
+    _objExamen1(float tam = 0.5, float al = 1.0);
+};
+
+class _objExamen2 : public _rotacion {
+ public:
+  _objExamen2(float radio=0.5, int num1=50, int num2=50);
+};
+
+class _objExamen3 : public _triangulos3D{
+  public:
+    float ancho;
+    float alto;
+    float fondo;
+
+    float giro1;
+    float transformacion1;
+
+    _objExamen3();
+    void draw(_modo modo, float r, float g, float b, float grosor);
+
+  protected:
+    _cubo base;
+    _cilindro horizontal;
+    _esfera ala;
+};

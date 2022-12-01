@@ -1,10 +1,24 @@
-  //**************************************************************************
+//**************************************************************************
 // Práctica 2
 //**************************************************************************
 
 #include "objetos_B4.h"
 
 #include "file_ply_stl.hpp"
+
+
+
+void _triangulos3D::cambiarMaterial(_vertex4f dif, _vertex4f esp, float b){
+  ambiente_difuso = dif;
+  ambiente_especular = esp;
+  brillo = b;
+}
+
+void _triangulos3D::cambiarMaterial(material m){
+  ambiente_difuso = m.ambiente_difuso;
+  ambiente_especular = m.ambiente_especular;
+  brillo = m.brillo;
+}
 
 double gradosARadianes(double grados)
 {
@@ -44,7 +58,11 @@ void _puntos3D::draw_puntos(float r, float g, float b, int grosor) {
 // _triangulos3D
 //*************************************************************************
 
-_triangulos3D::_triangulos3D() {}
+_triangulos3D::_triangulos3D() {
+  ambiente_difuso=_vertex4f(1.0,0.8,0,1.0);
+  ambiente_especular=_vertex4f(0.5,0.5,0.5,1.0);
+  brillo=110; //Entre 0 y 127
+}
 
 //*************************************************************************
 // dibujar en modo arista
@@ -144,6 +162,57 @@ void _triangulos3D::draw_solido_colors1() {
 }
 
 //*************************************************************************
+// dibujar en modo solido con iluminación plana
+//*************************************************************************
+  void _triangulos3D::draw_solido_plano(){
+    int i;
+    glEnable(GL_LIGHTING); //Activamos la iluminación
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, (GLfloat *) &ambiente_difuso);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat *) &ambiente_especular);
+    glMaterialf(GL_FRONT, GL_SHININESS, brillo);
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glBegin(GL_TRIANGLES);
+
+    for (i = 0; i < caras.size(); i++) {
+      glNormal3f(normales_caras[i].x, normales_caras[i].y, normales_caras[i].z);
+      glVertex3fv((GLfloat *)&vertices[caras[i]._0]);
+      glVertex3fv((GLfloat *)&vertices[caras[i]._1]);
+      glVertex3fv((GLfloat *)&vertices[caras[i]._2]);
+    }
+    glEnd();
+    glDisable(GL_LIGHTING); //Una vez dibujado desactivamos la iluminación para que no afecte a otros objetos
+
+  }
+  void _triangulos3D::draw_solido_suave(){
+    //normal para cada vertice
+    glEnable(GL_LIGHTING);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_NORMALIZE);
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, (GLfloat *)&ambiente_difuso);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat*)&ambiente_especular);
+    glMaterialf(GL_FRONT, GL_SHININESS, brillo);  // este es solo float
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBegin(GL_TRIANGLES);
+
+    int num_tot_caras = caras.size();
+
+    for (int i = 0; i < num_tot_caras; i++) {
+        glNormal3fv((GLfloat *)&normales_vertices[caras[i]._0]);
+        glVertex3fv((GLfloat*)&vertices[caras[i]._0]);
+
+        glNormal3fv((GLfloat *)&normales_vertices[caras[i]._1]);
+        glVertex3fv((GLfloat*)&vertices[caras[i]._1]);
+
+        glNormal3fv((GLfloat *)&normales_vertices[caras[i]._2]);
+        glVertex3fv((GLfloat*)&vertices[caras[i]._2]);
+    }
+    glDisable(GL_LIGHTING);
+    glEnd();
+  }
+
+//*************************************************************************
 // dibujar con distintos modos
 //*************************************************************************
 
@@ -166,6 +235,12 @@ void _triangulos3D::draw(_modo modo, float r, float g, float b, float grosor) {
       break;
     case SOLID_COLORS1:
       draw_solido_colors1();
+      break;
+    case SOLID_FLAT:
+      draw_solido_plano();
+      break;
+    case SOLID_SMOOTH:
+      draw_solido_suave();
       break;
   }
 }
@@ -236,9 +311,31 @@ void _triangulos3D::colors_chess(float r1, float g1, float b1, float r2,
   }
 
   void _triangulos3D::calcular_normales_vertices(){
-    int i, n_v;
+     int i, n_v;
+    float norma;
     n_v = vertices.size();
     normales_vertices.resize(n_v);
+
+    for(i=0; i < n_v; i++){
+        normales_vertices[i].x = 0;
+        normales_vertices[i].y = 0;
+        normales_vertices[i].z = 0;
+    }
+
+    for(i = 0; i < caras.size(); i++){
+        normales_vertices[caras[i]._0] += normales_caras[i];
+        normales_vertices[caras[i]._1] += normales_caras[i];
+        normales_vertices[caras[i]._2] += normales_caras[i];
+    }
+
+    for(i=0; i < n_v; i++){
+        norma = sqrt(normales_vertices[i].x*normales_vertices[i].x +
+                    normales_vertices[i].y*normales_vertices[i].y +
+                    normales_vertices[i].z*normales_vertices[i].z);
+        normales_vertices[i].x /= norma;
+        normales_vertices[i].y /= norma;
+        normales_vertices[i].z /= norma;
+    }
 
   }
 
@@ -271,7 +368,7 @@ void _triangulos3D::colors_chess(float r1, float g1, float b1, float r2,
 
       colores_caras[i].r=r * p_escalar + r*0.2; //r*0.2 componente ambiental - da un color minimo
       colores_caras[i].g=g * p_escalar + g*0.2;
-      colores_caras[i].b=b * p_escalar + b*0.2;
+      colores_caras[i].b=b * p_escalar + b*0.2 + 0.01;
     }
   }
 
@@ -356,8 +453,14 @@ _cubo::_cubo(float tam) {
   caras[11]._1 = 6;
   caras[11]._2 = 7;
 
+
+  //normales caras
+  calcular_normales_caras();
+  calcular_normales_vertices();
+
   // colores para las caras
-  colors_random();
+  // colors_random();
+  color_lambert_c(X_LAMBERT , Y_LAMBERT , Z_LAMBERT , 1.0, 0.8, 0);
 
 }
 
@@ -413,7 +516,10 @@ _piramide::_piramide(float tam, float al) {
   caras[5]._2 = 1;
 
   // colores para las caras
-    colors_random();
+  // colors_random();
+  calcular_normales_caras();
+  calcular_normales_vertices();
+  color_lambert_c(X_LAMBERT , Y_LAMBERT , Z_LAMBERT , 1.0, 0.8, 0);
 
 }
 
@@ -464,11 +570,13 @@ void _objeto_ply::parametros(char *archivo) {
   }
 
   //normales a caras
-  //calcular_normales_caras();
+  calcular_normales_caras();
+  calcular_normales_vertices();
 
   // colores para las caras
-  colors_random();
-  //color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
+  // colors_random();
+  color_lambert_c (-20, 20, 10, 1.0 ,0.8, 0); // luz picada
+  // color_lambert_c (0, 10, 40, 1.0 ,0.8, 0);
 
 }
 
@@ -598,6 +706,7 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
 
   //normales a caras
   calcular_normales_caras();
+  calcular_normales_vertices();
 
   // colores para las caras
   // colors_random();
@@ -643,12 +752,12 @@ _extrusion::_extrusion(vector<_vertex3f> poligono, float x, float y, float z) {
   // colores caras
   int num_caras = caras.size();
   colores_caras.resize(num_caras);
-  srand(10);
-  for (int i = 0; i < num_caras; i++) {
-    colores_caras[i].r = rand() % 1000 / 1000.0;
-    colores_caras[i].g = rand() % 1000 / 1000.0;
-    colores_caras[i].b = rand() % 1000 / 1000.0;
-  }
+  // srand(10);
+  // for (int i = 0; i < num_caras; i++) {
+  //   colores_caras[i].r = rand() % 1000 / 1000.0;
+  //   colores_caras[i].g = rand() % 1000 / 1000.0;
+  //   colores_caras[i].b = rand() % 1000 / 1000.0;
+  // }
 
   // Colores para los vertices
   colores_vertices.resize(num_aux);  // color entre 0 y 1
@@ -657,6 +766,10 @@ _extrusion::_extrusion(vector<_vertex3f> poligono, float x, float y, float z) {
     colores_vertices[i].g = rand() % 1000 / 1000.0;
     colores_vertices[i].b = rand() % 1000 / 1000.0;
   }
+
+  calcular_normales_caras();
+  calcular_normales_vertices();
+  color_lambert_c(X_LAMBERT , Y_LAMBERT , Z_LAMBERT , 1.0, 0.8, 0);
 }
 
 
@@ -967,6 +1080,8 @@ _cabeza::_cabeza() {
   // cubo.colors_chess(0.89, 0.76, 0.6, 0.88, 0.72, 0.55);
   cubo.colors_chess(0.59, 0.56, 0.56, 0.57, 0.54, 0.54);
 
+  cubo.cambiarMaterial(gold);
+
 };
 
 void _cabeza::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -981,6 +1096,8 @@ _tronco::_tronco() {
   alto = 3;
   fondo = 1;
   cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
+  cubo.cambiarMaterial(gold);
+
 };
 
 void _tronco::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -995,6 +1112,8 @@ _brazoIzq::_brazoIzq() {
   alto = 4;
   fondo = 1;
   cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
+  cubo.cambiarMaterial(gold);
+
 };
 
 void _brazoIzq::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1015,6 +1134,8 @@ _brazoDch::_brazoDch() {
   alto = 4;
   fondo = 1;
   cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
+  cubo.cambiarMaterial(gold);
+
 };
 
 void _brazoDch::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1036,6 +1157,8 @@ _piernaIzq::_piernaIzq() {
   alto = 4;
   fondo = 1;
   cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
+  cubo.cambiarMaterial(gold);
+
 };
 
 void _piernaIzq::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1050,6 +1173,8 @@ _piernaDch::_piernaDch() {
   alto = 4;
   fondo = 1;
   cubo.colors_chess(0.56, 0.56, 0.56, 0.58, 0.57, 0.59);
+  cubo.cambiarMaterial(gold);
+
 };
 
 void _piernaDch::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1065,6 +1190,9 @@ _escudo::_escudo(){
   fondo = 0.1;
   cubo.colors_chess(0.73,0.01,0.03,0.73,0.01,0.03);
   cilindro->colors_chess(0.29,0.16,0.1,0.29,0.16,0.1);
+
+  cubo.cambiarMaterial(madera);
+  cilindro->cambiarMaterial(cuero);
   
 }
 
@@ -1092,6 +1220,11 @@ _espada::_espada(){
   cuerpo.colors_chess(0.58, 0.77, 0.84, 0.6, 0.78, 0.85);
   punta.colors_chess(0.58, 0.77, 0.84, 0.6, 0.78, 0.85);
   cruz.colors_chess(0.78, 0.58, 0.39, 0.79, 0.6, 0.4);
+
+  cuerpo.cambiarMaterial(silver);
+  punta.cambiarMaterial(silver);
+  cruz.cambiarMaterial(jade);
+
 }
 
 void _espada::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1437,3 +1570,156 @@ void _objPrueba4::draw(_modo modo, float r, float g, float b, float grosor){
   glPopMatrix();
 }
 
+
+///////////////////////////////
+//  Examen 10-11-2022
+///////////////////////////////
+
+_objExamen1::_objExamen1(float tam, float al) {
+  // vertices
+  int n_vertices = 7;
+  vertices.resize(n_vertices);
+  vertices[0].x = -tam;
+  vertices[0].y = -tam;
+  vertices[0].z = -tam;
+
+  vertices[1].x = tam;
+  vertices[1].y = -tam;
+  vertices[1].z = -tam;
+
+  vertices[2].x = tam;
+  vertices[2].y = -tam;
+  vertices[2].z = tam;
+
+  vertices[3].x = -tam;
+  vertices[3].y = -tam;
+  vertices[3].z = tam;
+
+
+
+  vertices[4].x = -tam;
+  vertices[4].y = tam;
+  vertices[4].z = -tam;
+  
+  vertices[5].x = tam;
+  vertices[5].y = tam;
+  vertices[5].z = tam;
+
+  vertices[6].x = -tam;
+  vertices[6].y = 2*tam;
+  vertices[6].z = tam;
+
+
+  // Colores para los vertices
+  colores_vertices.resize(n_vertices);  // color entre 0 y 1
+  for (int i = 0; i < n_vertices; i++) {
+    colores_vertices[i].r = rand() % 1000 / 1000.0;
+    colores_vertices[i].g = rand() % 1000 / 1000.0;
+    colores_vertices[i].b = rand() % 1000 / 1000.0;
+  }
+
+  // caras triangulos
+  int n_caras = 10;
+  caras.resize(n_caras);
+  caras[0]._0 = 0;
+  caras[0]._1 = 1;
+  caras[0]._2 = 4;
+  caras[1]._0 = 4;
+  caras[1]._1 = 1;
+  caras[1]._2 = 5;
+
+  caras[2]._0 = 5;
+  caras[2]._1 = 1;
+  caras[2]._2 = 2;
+
+  caras[3]._0 = 5;
+  caras[3]._1 = 2;
+  caras[3]._2 = 3;
+  caras[4]._0 = 3;
+  caras[4]._1 = 5;
+  caras[4]._2 = 6;
+  caras[5]._0 = 6;
+  caras[5]._1 = 4;
+  caras[5]._2 = 3;
+  caras[6]._0 = 3;
+  caras[6]._1 = 4;
+  caras[6]._2 = 0;
+  caras[7]._0 = 0;
+  caras[7]._1 = 1;
+  caras[7]._2 = 2;
+  caras[8]._0 = 2;
+  caras[8]._1 = 3;
+  caras[8]._2 = 0;
+  caras[9]._0 = 4;
+  caras[9]._1 = 5;
+  caras[9]._2 = 6;
+
+  // colores para las caras
+  colors_random();
+}
+
+_objExamen2::_objExamen2(float radio, int num1, int num2){
+    vector<_vertex3f> perfil;
+  _vertex3f aux;
+  int i;
+
+  perfil.push_back({0,0,0});
+  perfil.push_back({0.8,0,0});
+  perfil.push_back({0.8,0.3,0});
+
+  // Empezamos en 1 pa no repetir el punto inferior muchas veces
+  for (i = 0; i < num1/2+1; i++) {
+    aux.x = 0.2 + radio * cos(M_PI * i / num1 * 1.0);
+    aux.y = 0.3 + radio * sin(M_PI * i / num1 * 1.0);
+    aux.z = 0.0;
+    perfil.push_back(aux);
+  }
+  
+  perfil.push_back({0.2,1,0});
+
+  parametros(perfil, num2, 2, 0, 0);
+}
+
+
+_objExamen3::_objExamen3(){
+  ancho = 1;
+  alto  = 3;
+  fondo = 2;
+
+  giro1 = 0;
+  transformacion1 = 3;
+
+  base.colors_random();
+  horizontal.colors_random();
+  ala.colors_chess(0.58, 0.77, 0.84, 0.6, 0.78, 0.85);
+
+}
+
+void _objExamen3::draw(_modo modo, float r, float g, float b, float grosor){
+
+  float h_ancho = 0.3;
+  float h_alto = transformacion1;
+  float h_fondo = 0.3;
+
+  glPushMatrix();
+    glTranslatef(0,alto/2,0);
+    glScalef(ancho,alto,fondo);
+    base.draw(modo,r,g,b,grosor);
+  glPopMatrix();
+
+  glTranslatef(ancho/2,alto*6/8,0);
+  glPushMatrix();
+    glRotatef(-90,0,0,1);
+    glTranslatef(0,h_alto/2,0);
+    glScalef(h_ancho,h_alto,h_fondo);
+    glScalef(1,0.5,1);
+    horizontal.draw(modo,r,g,b,grosor);
+  glPopMatrix();
+
+  glPushMatrix();
+    glTranslatef(h_alto-0.2, 0, h_fondo);
+    glRotatef(giro1,0,0,1);
+    glScalef(1.2,0.2,0.1);
+    ala.draw(modo,r,g,b,grosor);
+  glPopMatrix();
+}
