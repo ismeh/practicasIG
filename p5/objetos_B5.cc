@@ -1306,10 +1306,10 @@ _soldado::_soldado(){
   color_select.resize(piezas);
   activo.resize(piezas);
 
-  for (int i=0;i<piezas;i++)
-    {activo[i]=0;
-    color_select[i].r=color_select[i].g=color_select[i].b=color;
-    color+=20; //de 1 en 1
+  for (int i=0;i<piezas;i++){
+      activo[i]=0;
+      color_select[i].r=color_select[i].g=color_select[i].b=color;
+      color+=20; //de 1 en 1
     }
 };
 

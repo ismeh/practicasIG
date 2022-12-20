@@ -71,6 +71,12 @@ _objExamen3 objExamen3;
 // _objeto_ply *ply;
 
 int estadoRaton, xc, yc;
+float factor = 1.0;
+int cambio_orto = 0;
+int desplazamiento_x = 0,
+      desplazamiento_y = 0;
+float Ancho;
+float Alto;
 
 void movimientoPiernas(float cantidad_movimiento) {
   if (soldado.giro_piernas >= soldado.giro_piernas_max)
@@ -123,7 +129,8 @@ void change_projection() {
   // formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero,
   // plano_traser)
   //  plano_delantero>0  plano_trasero>PlanoDelantero)
-  glFrustum(-Size_x, Size_x, -Size_y, Size_y, Front_plane, Back_plane);
+  glFrustum(-Size_x*factor, Size_x*factor, -Size_y*factor, Size_y*factor, Front_plane, Back_plane); //Vista en perspectiva 1º forma de hacer zoom (multiplicar los 4 primeros parametros * 'factor')
+  //3º forma de hacer zoom (multiplicar el plano frontal y rasero por 'factor' siendo este ¿ >1 ó < -1 ?)
 }
 
 //**************************************************************************
@@ -134,7 +141,7 @@ void change_observer() {
   // posicion del observador
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glTranslatef(0, 0, -Observer_distance);
+  glTranslatef(0, 0, -Observer_distance); //Cambiar el centro de proyección //sumar acerca 2º forma
   glRotatef(Observer_angle_x, 1, 0, 0);
   glRotatef(Observer_angle_y, 0, 1, 0);
 }
@@ -284,6 +291,43 @@ void luces(float alpha) {
   glDisable(GL_LIGHT0);
 }
 
+void vista_orto(){
+  //Primera vista 
+  glViewport(Ancho/2, Alto/2, Ancho/2,Alto/2);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(-5*factor,5*factor,-5*factor,5*factor,-100,100);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  draw_axis();
+  draw_objects();
+
+  //Segunda vista Planta
+  glViewport(0, Alto/2, Ancho/2,Alto/2);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(-5*factor,5*factor,-5*factor,5*factor,-100,100);
+
+  glRotatef(90,1,0,0);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  draw_axis();
+  draw_objects();
+
+  //Tercera vista (abajo izq)
+  glViewport(0, 0, Ancho/2,Alto/2);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(-5*factor,5*factor,-5*factor,5*factor,-100,100);
+  glRotatef(90,0,1,0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  draw_axis();
+  draw_objects();
+}
+
 //**************************************************************************
 //  Función que pinta los objetos
 //***************************************************************************
@@ -292,19 +336,29 @@ void draw(void) {
   // Dibujamos en el buffer delantero
   glDrawBuffer(GL_FRONT);
   clean_window();
-  change_observer();
   luces(movimiento_camara);
-  draw_axis();
-  draw_objects();
-  // glFlush();
+
+  if(cambio_orto==0){
+    glViewport(0,0,Ancho,Alto);
+    change_projection();
+    change_observer();
+    draw_axis();
+    draw_objects();
+    // glFlush();
+  }
+  else
+    vista_orto();
 
   // Dibujamos en el buffer trasero
   // No hacen falta ejes ni luces
   if (t_objeto == SOLDADO) {
     glDrawBuffer(GL_BACK);
     clean_window();
-    change_observer();
-    soldado.seleccion();
+    if(cambio_orto==0){
+      change_projection();
+      change_observer();
+      soldado.seleccion();
+    }
   }
   glFlush();
 }
@@ -319,6 +373,8 @@ void draw(void) {
 
 void change_window_size(int Ancho1, int Alto1) {
   float Aspect_ratio;
+  Ancho = Ancho1;
+  Alto = Alto1;
 
   Aspect_ratio = (float)Alto1 / (float)Ancho1;
   Size_y = Size_x * Aspect_ratio;
@@ -364,6 +420,9 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case '8':
       modo = SOLID_COLORS_VERTEX;
       break;
+    case '9':
+      cambio_orto = cambio_orto == 1 ? 0 : 1;
+      break;
     case 'P':
       t_objeto = PIRAMIDE;
       break;
@@ -391,9 +450,9 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'M':
       t_objeto = ROTACION_PLY;
       break;
-    // case 'B':
-    //   t_objeto = EXCAVADORA;
-    //   break;
+    case 'B':
+      t_objeto = EXCAVADORA;
+      break;
     case 'A':
       t_objeto = SOLDADO;
       break;
@@ -424,6 +483,7 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       // case 'J':
       //   t_objeto = OBJ_PRUEBA4;
       //   break;
+    
   }
   glutPostRedisplay();
 }
@@ -602,6 +662,16 @@ void clickRaton(int boton, int estado, int x, int y) {
       pick_color(xc, yc);
     }
   }
+
+  if(boton==3){
+    factor*=1.1;
+    glutPostRedisplay();
+  }
+  if (boton==4){
+    factor*=0.9;
+    glutPostRedisplay();
+  }
+  
 }
 
 /*************************************************************************/
@@ -742,7 +812,7 @@ int main(int argc, char *argv[]) {
 
   //Raton
   glutMouseFunc(clickRaton);
-  //glutMotionFunc(ratonMovido);
+  glutMotionFunc(RatonMovido);
 
 
   // inicio del bucle de eventos
