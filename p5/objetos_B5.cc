@@ -728,7 +728,22 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
 
   //normales a caras
   calcular_normales_caras();
-  calcular_normales_vertices();
+  if (tipo == 2) {
+    float norma;
+    int n_v = vertices.size();
+    normales_vertices.resize(n_v);
+
+    for (int i = 0; i < n_v; i++) {
+      norma = sqrt(vertices[i].x * vertices[i].x +
+                   vertices[i].y * vertices[i].y +
+                   vertices[i].z * vertices[i].z);
+
+      normales_vertices[i].x = vertices[i].x / norma;
+      normales_vertices[i].y = vertices[i].y / norma;
+      normales_vertices[i].z = vertices[i].z / norma;
+    }
+  } else
+    calcular_normales_vertices();
 
   // colores para las caras
   // colors_random();
