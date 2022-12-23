@@ -1,8 +1,15 @@
 README	
-Información de las teclas usables para la práctica 4
+Información de las teclas usables para la práctica 5 y anteriores
 Autor  Ismael Tengo Rodríguez - 3º B - Ingeniería Informática
 				
-	Práctica 4
+	Práctica 5
+		Mover la camara: Click derecho + mover ratón
+		Zoom: Rueda del raton
+		Cámara ortogonal: '9'
+		Modo SELECT: '0'
+			Permite ver las diferentes piezas a seleccionar del objeto jerárquico
+		Click izq sobre las piezas del objeto jerárquico para seleccionarlas
+
 		Luces
 			Luz blanca fija
 			Luces en movimiento
