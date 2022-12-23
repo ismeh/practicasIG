@@ -129,7 +129,7 @@ void change_projection() {
   // formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero,
   // plano_traser)
   //  plano_delantero>0  plano_trasero>PlanoDelantero)
-  glFrustum(-Size_x*factor, Size_x*factor, -Size_y*factor, Size_y*factor, Front_plane, Back_plane); //Vista en perspectiva 1º forma de hacer zoom (multiplicar los 4 primeros parametros * 'factor')
+  glFrustum(-Size_x, Size_x, -Size_y, Size_y, Front_plane, Back_plane); //Vista en perspectiva 1º forma de hacer zoom (multiplicar los 4 primeros parametros * 'factor')
   //3º forma de hacer zoom (multiplicar el plano frontal y rasero por 'factor' siendo este ¿ >1 ó < -1 ?)
 }
 
@@ -141,7 +141,7 @@ void change_observer() {
   // posicion del observador
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glTranslatef(0, 0, -Observer_distance); //Cambiar el centro de proyección //sumar acerca 2º forma
+  glTranslatef(0, 0, -Observer_distance/factor); //Cambiar el centro de proyección //sumar acerca 2º forma
   glRotatef(Observer_angle_x, 1, 0, 0);
   glRotatef(Observer_angle_y, 0, 1, 0);
 }
@@ -206,7 +206,10 @@ void draw_objects() {
       excavadora.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
     case SOLDADO:
-      soldado.draw(modo, 1.0, 0.0, 0.0, 5);
+      if(modo != SELECT)
+        soldado.draw(modo, 1.0, 0.0, 0.0, 5);
+      else
+        soldado.seleccion();
       break;
     case OBJ_EXAMEN1:
       objExamen1.draw(modo, 1.0, 0.0, 0.0, 5);
@@ -423,6 +426,9 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case '9':
       cambio_orto = cambio_orto == 1 ? 0 : 1;
       break;
+    case '0':
+      modo = SELECT;
+      break;
     case 'P':
       t_objeto = PIRAMIDE;
       break;
@@ -620,6 +626,34 @@ void procesar_color(unsigned char color[3]) {
       glutPostRedisplay();
     }
   }
+
+  for (i = 0; i < soldado.brazoIzq.piezas; i++) {
+    if (color[0] == soldado.brazoIzq.color_select[i].r &&
+        color[1] == soldado.brazoIzq.color_select[i].g &&
+        color[2] == soldado.brazoIzq.color_select[i].r) {
+      if (soldado.brazoIzq.activo[i] == 0) {
+        soldado.brazoIzq.activo[i] = 1;
+      } else {
+        soldado.brazoIzq.activo[i] = 0;
+      }
+      glutPostRedisplay();
+    }
+  }
+
+  for (i = 0; i < soldado.brazoDch.piezas; i++) {
+    if (color[0] == soldado.brazoDch.color_select[i].r &&
+        color[1] == soldado.brazoDch.color_select[i].g &&
+        color[2] == soldado.brazoDch.color_select[i].r) {
+      if (soldado.brazoDch.activo[i] == 0) {
+        soldado.brazoDch.activo[i] = 1;
+      } else {
+        soldado.brazoDch.activo[i] = 0;
+      }
+      glutPostRedisplay();
+    }
+  }
+
+
 }
 
 //***************************************************************************

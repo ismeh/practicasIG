@@ -349,6 +349,14 @@ class _brazoIzq : public _triangulos3D{
   float ancho;
   float alto;
   float fondo;
+  //Atributos para la selección
+  _vertex3f color_pick; //Color usado para los objetos seleccionados
+  vector<_vertex3i> color_select; //
+  vector<int> activo; //Para marcar los objetos seleccionados
+  int piezas; //NUm piezas seleccionadas
+  int grosor_select; //Grosos de las lineas de los objetos seleccionados
+  void seleccion();
+
 
  protected:
   _cubo cubo;
@@ -379,6 +387,14 @@ class _brazoDch: public _triangulos3D{
   float ancho;
   float alto;
   float fondo;
+
+  //Atributos para la selección
+  _vertex3f color_pick; //Color usado para los objetos seleccionados
+  vector<_vertex3i> color_select; //
+  vector<int> activo; //Para marcar los objetos seleccionados
+  int piezas; //NUm piezas seleccionadas
+  int grosor_select; //Grosos de las lineas de los objetos seleccionados
+  void seleccion();
 
  protected:
   _cubo cubo;
@@ -448,13 +464,13 @@ class _soldado : public _triangulos3D{
     void draw(_modo modo, float r, float g, float b, float grosor);
     void seleccion();
 
+    _brazoIzq brazoIzq;
+    _brazoDch brazoDch;
   protected:
     _cabeza cabeza;
     _tronco tronco;
     _piernaIzq piernaIzq;
     _piernaDch piernaDch;
-    _brazoIzq brazoIzq;
-    _brazoDch brazoDch;
     _escudo escudo;
     _espada espada;
 
