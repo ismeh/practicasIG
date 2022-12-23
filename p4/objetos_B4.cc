@@ -10,13 +10,13 @@
 
 void _triangulos3D::cambiarMaterial(_vertex4f dif, _vertex4f esp, float b){
   ambiente_difuso = dif;
-  ambiente_especular = esp;
+  especular = esp;
   brillo = b;
 }
 
 void _triangulos3D::cambiarMaterial(material m){
   ambiente_difuso = m.ambiente_difuso;
-  ambiente_especular = m.ambiente_especular;
+  especular = m.especular;
   brillo = m.brillo;
 }
 
@@ -60,7 +60,7 @@ void _puntos3D::draw_puntos(float r, float g, float b, int grosor) {
 
 _triangulos3D::_triangulos3D() {
   ambiente_difuso=_vertex4f(1.0,0.8,0,1.0);
-  ambiente_especular=_vertex4f(0.5,0.5,0.5,1.0);
+  especular=_vertex4f(0.5,0.5,0.5,1.0);
   brillo=110; //Entre 0 y 127
 }
 
@@ -168,8 +168,10 @@ void _triangulos3D::draw_solido_colors1() {
     int i;
     glEnable(GL_LIGHTING); //Activamos la iluminación
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, (GLfloat *) &ambiente_difuso);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat *) &ambiente_especular);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat *) &especular);
     glMaterialf(GL_FRONT, GL_SHININESS, brillo);
+
+    glEnable(GL_NORMALIZE);
     glPolygonMode(GL_FRONT, GL_FILL);
     glBegin(GL_TRIANGLES);
 
@@ -190,7 +192,7 @@ void _triangulos3D::draw_solido_colors1() {
     glEnable(GL_NORMALIZE);
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, (GLfloat *)&ambiente_difuso);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat*)&ambiente_especular);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat*)&especular);
     glMaterialf(GL_FRONT, GL_SHININESS, brillo);  // este es solo float
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

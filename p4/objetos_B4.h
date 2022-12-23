@@ -41,7 +41,7 @@ class _puntos3D {
 struct material
 {
   _vertex4f ambiente_difuso;
-  _vertex4f ambiente_especular;
+  _vertex4f especular;
   float brillo;
 };
 
@@ -84,7 +84,7 @@ class _triangulos3D : public _puntos3D {
   //Material del objeto (4 componentes, rgb + alpha)
   //gl ambient
   _vertex4f ambiente_difuso;  //color del objeto
-  _vertex4f ambiente_especular;//color del objeto ante una luz
+  _vertex4f especular;//color del objeto ante una luz
   //fisicamente ambientee y difusa son iguales
   // en opengl
   float brillo;
